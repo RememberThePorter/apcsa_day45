@@ -16,23 +16,21 @@ public class SpreadsheetLocation implements Location {
     @Override
     public int getCol() {
         String col = loc.substring(0, 1);
-        int colNum;
-        switch(col) {
-            case "A": colNum = 0; break;
-            case "B": colNum = 1; break;
-            case "C": colNum = 2; break;
-            case "D": colNum = 3; break;
-            case "E": colNum = 4; break;
-            case "F": colNum = 5; break;
-            case "G": colNum = 6; break;
-            case "H": colNum = 7; break;
-            case "I": colNum = 8; break;
-            case "J": colNum = 9; break;
-            case "K": colNum = 10; break;
-            case "L": colNum = 11; break;
-            default: colNum = 0; break;
-        }
 
-        return colNum;
+        return switch (col) {
+            case "A" -> 0;
+            case "B" -> 1;
+            case "C" -> 2;
+            case "D" -> 3;
+            case "E" -> 4;
+            case "F" -> 5;
+            case "G" -> 6;
+            case "H" -> 7;
+            case "I" -> 8;
+            case "J" -> 9;
+            case "K" -> 10;
+            case "L" -> 11;
+            default -> 0;
+        };
     }
 }
