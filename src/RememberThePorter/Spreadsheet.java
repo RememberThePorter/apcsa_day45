@@ -22,12 +22,12 @@ public class Spreadsheet implements Grid {
 
     @Override
     public int getRows() {
-        return 0;
+        return 20;
     }
 
     @Override
     public int getCols() {
-        return 0;
+        return 12;
     }
 
     @Override
