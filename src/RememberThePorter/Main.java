@@ -1,7 +1,6 @@
-import Tests.TestRunner;
+package RememberThePorter;
 
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import RememberThePorter.Tests.TestRunner;
 
 // Update this file with your own code.
 class Main {

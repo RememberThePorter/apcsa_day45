@@ -1,4 +1,4 @@
-package Tests;
+package RememberThePorter.Tests;
 
 //*******************************************************
 //DO NOT MODIFY THIS FILE!!!
@@ -10,12 +10,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Scanner;
 
-import Interfaces.Cell;
-import Interfaces.Grid;
-import Interfaces.Location;
+import RememberThePorter.Interfaces.Cell;
+import RememberThePorter.Interfaces.Grid;
+import RememberThePorter.Interfaces.Location;
+import RememberThePorter.Spreadsheet;
+import RememberThePorter.SpreadsheetLocation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

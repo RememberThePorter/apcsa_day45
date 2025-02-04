@@ -1,4 +1,4 @@
-package Tests;
+package RememberThePorter.Tests;
 
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
