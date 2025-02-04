@@ -10,7 +10,7 @@ public class SpreadsheetLocation implements Location {
     }
     @Override
     public int getRow() {
-        return Integer.parseInt(loc.substring(1));
+        return Integer.parseInt(loc.substring(1)) - 1;
     }
 
     @Override
@@ -18,19 +18,19 @@ public class SpreadsheetLocation implements Location {
         String col = loc.substring(0, 1);
         int colNum;
         switch(col) {
-            case "A": colNum = 1;
-            case "B": colNum = 2;
-            case "C": colNum = 3;
-            case "D": colNum = 4;
-            case "E": colNum = 5;
-            case "F": colNum = 6;
-            case "G": colNum = 7;
-            case "H": colNum = 8;
-            case "I": colNum = 9;
-            case "J": colNum = 10;
-            case "K": colNum = 11;
-            case "L": colNum = 12;
-            default: colNum = 0;
+            case "A": colNum = 0; break;
+            case "B": colNum = 1; break;
+            case "C": colNum = 2; break;
+            case "D": colNum = 3; break;
+            case "E": colNum = 4; break;
+            case "F": colNum = 5; break;
+            case "G": colNum = 6; break;
+            case "H": colNum = 7; break;
+            case "I": colNum = 8; break;
+            case "J": colNum = 9; break;
+            case "K": colNum = 10; break;
+            case "L": colNum = 11; break;
+            default: colNum = 0; break;
         }
 
         return colNum;
