@@ -13,6 +13,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import Interfaces.Cell;
+import Interfaces.Grid;
+import Interfaces.Location;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
