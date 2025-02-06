@@ -3,13 +3,23 @@ package RememberThePorter;
 import RememberThePorter.Interfaces.Cell;
 
 public class TextCell implements Cell {
+    private String text;
+
+    public TextCell(String text) {
+        this.text = text;
+    }
+
     @Override
     public String abbreviatedCellText() {
-        return "";
+        if(this.text.length() > 10) {
+            return this.text.substring(0, 10);
+        } else {
+            return this.text;
+        }
     }
 
     @Override
     public String fullCellText() {
-        return "";
+        return this.text;
     }
 }

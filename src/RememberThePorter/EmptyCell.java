@@ -5,11 +5,11 @@ import RememberThePorter.Interfaces.Cell;
 public class EmptyCell implements Cell {
     @Override
     public String abbreviatedCellText() {
-        return "";
+        return "          ";
     }
 
     @Override
     public String fullCellText() {
-        return "";
+        return "          ";
     }
 }
