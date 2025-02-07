@@ -19,7 +19,59 @@ public class Spreadsheet implements Grid {
 
     @Override
     public String processCommand(String command) {
-        return "";
+        String[] split = command.split(" ", 3);
+        if(split[0].equals("clear")) {
+            if(split.length == 1) {
+                clearAll();
+            } else {
+                clearCell(split[1]);
+            }
+            return getGridText();
+        } else {
+            if(split.length == 1) {
+                return inspectCell(split[0]);
+            } else {
+                return updateCell(split);
+            }
+        }
+    }
+
+    public void clearAll() {
+        for(int row = 0; row < getRows(); row++) {
+            for(int col = 0; col < getCols(); col++) {
+                cells[row][col] = new EmptyCell();
+            }
+        }
+    }
+
+    public void clearCell(String loc) {
+        int[] coords = getCoordinates(loc);
+
+        cells[coords[0]][coords[1]] = new EmptyCell();
+    }
+
+    public String inspectCell(String loc) {
+        int[] coords = getCoordinates(loc);
+
+        return cells[coords[0]][coords[1]].fullCellText();
+    }
+
+    public String updateCell(String[] command) {
+        if(command[1].equals("=")) {
+            int[] coords = getCoordinates(command[0]);
+            cells[coords[0]][coords[1]] = new TextCell(command[2]);
+            return getGridText();
+        } else {
+            return("Error: No equals");
+        }
+    }
+
+    public int[] getCoordinates(String loc) {
+        SpreadsheetLocation sheetloc = new SpreadsheetLocation(loc);
+        int row = sheetloc.getRow();
+        int col = sheetloc.getCol();
+
+        return new int[] {row, col};
     }
 
     @Override
@@ -39,22 +91,20 @@ public class Spreadsheet implements Grid {
 
     @Override
     public String getGridText() {
-        String output = "   |A         |B         |C         |D         |E         |F         |G         |H         |I         |J         |K         |L         |\n";
+        StringBuilder output = new StringBuilder("   |A         |B         |C         |D         |E         |F         |G         |H         |I         |J         |K         |L         |\n");
         for(int row = 0; row < getRows(); row++) {
-            output += (row + 1);
+            output.append(row + 1);
             if((row + 1) < 10) {
-                output += " ";
+                output.append(" ");
             }
-            output += " |";
+            output.append(" |");
             for(int col = 0; col < getCols(); col++) {
-                output += cells[row][col].abbreviatedCellText();
-                for(int spaces = 0; spaces < (10 - cells[row][col].abbreviatedCellText().length()); spaces++) {
-                    output += " ";
-                }
-                output += "|";
+                output.append(cells[row][col].abbreviatedCellText());
+                output.append(" ".repeat(Math.max(0, (10 - cells[row][col].abbreviatedCellText().length()))));
+                output.append("|");
             }
-            output += "\n";
+            output.append("\n");
         }
-        return output;
+        return output.toString();
     }
 }

@@ -3,7 +3,7 @@ package RememberThePorter;
 import RememberThePorter.Interfaces.Cell;
 
 public class TextCell implements Cell {
-    private String text;
+    public String text;
 
     public TextCell(String text) {
         this.text = text;
