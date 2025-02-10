@@ -11,11 +11,19 @@ public class TextCell implements Cell {
 
     @Override
     public String abbreviatedCellText() {
-        if(this.text.length() > 10) {
-            return this.text.substring(0, 10);
-        } else {
-            return this.text;
+        StringBuilder abbreviated = new StringBuilder(this.text);
+        if(this.text.startsWith("\"") && this.text.endsWith("\"")) {
+            abbreviated = new StringBuilder(this.text.substring(1, this.text.length() - 1));
         }
+        if(this.text.startsWith("\"") && this.text.endsWith("\"")) {
+            abbreviated = new StringBuilder(this.text.substring(1, this.text.length() - 1));
+        }
+        if(abbreviated.length() > 10) {
+            abbreviated = new StringBuilder(abbreviated.substring(0, 10));
+        } else if(abbreviated.length() < 10) {
+            abbreviated.append(" ".repeat(Math.max(0, 10 - abbreviated.length())));
+        }
+        return abbreviated.toString();
     }
 
     @Override

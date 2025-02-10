@@ -20,7 +20,7 @@ public class Spreadsheet implements Grid {
     @Override
     public String processCommand(String command) {
         String[] split = command.split(" ", 3);
-        if(split[0].equals("clear")) {
+        if(split[0].equalsIgnoreCase("clear")) {
             if(split.length == 1) {
                 clearAll();
             } else {
@@ -88,7 +88,7 @@ public class Spreadsheet implements Grid {
 
     @Override
     public Cell getCell(Location loc) {
-        return cells[loc.getCol()][loc.getRow()];
+        return cells[loc.getRow()][loc.getCol()];
     }
 
     @Override
