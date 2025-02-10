@@ -64,9 +64,6 @@ public class Spreadsheet implements Grid {
     public String updateCell(String[] command) {
         if(command[1].equals("=")) {
             int[] coords = getCoordinates(command[0]);
-            if(command[2].startsWith("\"") && command[2].endsWith("\"")) {
-                command[2] = command[2].substring(1, command[2].length() - 1);
-            }
             System.out.println(command[0] + ", " + command[1] + ", " + command[2]);
             cells[coords[0]][coords[1]] = new TextCell(command[2]);
             System.out.println(cells[coords[0]][coords[1]].fullCellText());
