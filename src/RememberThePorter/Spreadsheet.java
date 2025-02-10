@@ -4,6 +4,8 @@ import RememberThePorter.Interfaces.Cell;
 import RememberThePorter.Interfaces.Grid;
 import RememberThePorter.Interfaces.Location;
 
+import java.util.Arrays;
+
 public class Spreadsheet implements Grid {
     private Cell[][] cells;
 
@@ -27,10 +29,13 @@ public class Spreadsheet implements Grid {
                 clearCell(split[1]);
             }
             return getGridText();
+        } else if(command.isEmpty()) {
+            return "";
         } else {
             if(split.length == 1) {
                 return inspectCell(split[0]);
             } else {
+                System.out.println(Arrays.toString(split));
                 return updateCell(split);
             }
         }
@@ -59,7 +64,13 @@ public class Spreadsheet implements Grid {
     public String updateCell(String[] command) {
         if(command[1].equals("=")) {
             int[] coords = getCoordinates(command[0]);
+            if(command[2].startsWith("\"") && command[2].endsWith("\"")) {
+                command[2] = command[2].substring(1, command[2].length() - 1);
+            }
+            System.out.println(command[0] + ", " + command[1] + ", " + command[2]);
             cells[coords[0]][coords[1]] = new TextCell(command[2]);
+            System.out.println(cells[coords[0]][coords[1]].fullCellText());
+            System.out.println(cells[coords[0]][coords[1]].abbreviatedCellText());
             return getGridText();
         } else {
             return("Error: No equals");
