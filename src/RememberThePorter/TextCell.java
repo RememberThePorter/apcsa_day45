@@ -15,9 +15,6 @@ public class TextCell implements Cell {
         if(this.text.startsWith("\"") && this.text.endsWith("\"")) {
             abbreviated = new StringBuilder(this.text.substring(1, this.text.length() - 1));
         }
-        if(this.text.startsWith("\"") && this.text.endsWith("\"")) {
-            abbreviated = new StringBuilder(this.text.substring(1, this.text.length() - 1));
-        }
         if(abbreviated.length() > 10) {
             abbreviated = new StringBuilder(abbreviated.substring(0, 10));
         } else if(abbreviated.length() < 10) {

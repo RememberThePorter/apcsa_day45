@@ -61,8 +61,19 @@ public class Spreadsheet implements Grid {
     public String updateCell(String[] command) {
         if(command[1].equals("=")) {
             int[] coords = getCoordinates(command[0]);
-            cells[coords[0]][coords[1]] = new TextCell(command[2]);
-            return getGridText();
+            if(command[2].endsWith("%")) {
+                cells[coords[0]][coords[1]] = new PercentCell(command[2]);
+                return getGridText();
+            } else if(command[2].startsWith("\"") && command[2].endsWith("\"")) {
+                cells[coords[0]][coords[1]] = new TextCell(command[2]);
+                return getGridText();
+            } else if(command[2].startsWith("(") && command[2].endsWith(")")) {
+                cells[coords[0]][coords[1]] = new FormulaCell(command[2]);
+                return getGridText();
+            } else {
+                cells[coords[0]][coords[1]] = new ValueCell(command[2]);
+                return getGridText();
+            }
         } else {
             return("Error: No equals");
         }
