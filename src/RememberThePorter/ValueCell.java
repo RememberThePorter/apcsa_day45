@@ -9,12 +9,12 @@ public class ValueCell extends RealCell {
 
     @Override
     public double getDoubleValue() {
-        return super.getDoubleValue();
+        return Double.parseDouble(fullCellText());
     }
 
     @Override
     public String abbreviatedCellText() {
-        StringBuilder abbreviated = new StringBuilder(String.valueOf(Double.parseDouble(fullCellText())));
+        StringBuilder abbreviated = new StringBuilder(String.valueOf(getDoubleValue()));
         if(abbreviated.length() > 10) {
             abbreviated = new StringBuilder(abbreviated.substring(0, 10));
         } else if(abbreviated.length() < 10) {

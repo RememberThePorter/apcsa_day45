@@ -9,7 +9,7 @@ public class PercentCell extends RealCell {
 
     @Override
     public double getDoubleValue() {
-        return super.getDoubleValue();
+        return Double.parseDouble(this.percent.substring(0, this.percent.length() - 1)) / 100;
     }
 
     @Override
@@ -28,6 +28,6 @@ public class PercentCell extends RealCell {
 
     @Override
     public String fullCellText() {
-        return String.valueOf(Double.parseDouble(this.percent.substring(0, this.percent.length() - 1)) / 100);
+        return String.valueOf(getDoubleValue());
     }
 }
