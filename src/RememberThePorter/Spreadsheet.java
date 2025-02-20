@@ -68,23 +68,27 @@ public class Spreadsheet implements Grid {
                     int rowAdjusted = row + 1;
 
                     String type = getType(row, col);
-                    try {
-                        String fullFilePath = System.getProperty("user.home") + "/Downloads/" + file;
-                        System.out.println(fullFilePath);
-                        File testFile = new File(fullFilePath);
-                        System.out.println(testFile.toString());
-                        testFile.createNewFile();
+                    if(!type.equals("EmptyCell")) {
                         try {
-                            FileWriter f = new FileWriter(testFile);
-                            System.out.println(f.toString());
-                            f.write(colLetter + rowAdjusted + "," + type + "," + cells[row][col].fullCellText());
-                        } catch(IOException e) {
-                            System.out.println("An IOException occurred:");
+                            String fullFilePath = System.getProperty("user.home") + "/Downloads/" + file;
+                            System.out.println(fullFilePath);
+                            File testFile = new File(fullFilePath);
+                            System.out.println(testFile.toString());
+                            testFile.createNewFile();
+                            try {
+                                FileWriter f = new FileWriter(testFile);
+                                System.out.println(f.toString());
+                                String toPrint = colLetter + rowAdjusted + "," + type + "," + cells[row][col].fullCellText();
+                                System.out.println(toPrint);
+                                f.write(toPrint);
+                            } catch (IOException e) {
+                                System.out.println("An IOException occurred:");
+                                e.printStackTrace();
+                            }
+                        } catch (Exception e) {
+                            System.out.println("An error occurred:");
                             e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        System.out.println("An error occurred:");
-                        e.printStackTrace();
                     }
                 }
             }
@@ -94,14 +98,16 @@ public class Spreadsheet implements Grid {
     private String getType(int row, int col) {
         String type;
 
-        if (cells[row][col] instanceof TextCell) {
+        if(cells[row][col] instanceof TextCell) {
             type = "TextCell";
-        } else if (cells[row][col] instanceof FormulaCell) {
+        } else if(cells[row][col] instanceof FormulaCell) {
             type = "FormulaCell";
-        } else if (cells[row][col] instanceof PercentCell) {
+        } else if(cells[row][col] instanceof PercentCell) {
             type = "PercentCell";
-        } else if (cells[row][col] instanceof ValueCell) {
+        } else if(cells[row][col] instanceof ValueCell) {
             type = "ValueCell";
+        } else if(cells[row][col] instanceof EmptyCell) {
+            type = "EmptyCell";
         } else {
             type = "RealCell";
         }
