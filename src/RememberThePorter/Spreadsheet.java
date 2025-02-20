@@ -4,6 +4,11 @@ import RememberThePorter.Interfaces.Cell;
 import RememberThePorter.Interfaces.Grid;
 import RememberThePorter.Interfaces.Location;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 public class Spreadsheet implements Grid {
     private Cell[][] cells;
 
@@ -27,6 +32,9 @@ public class Spreadsheet implements Grid {
                 clearCell(split[1]);
             }
             return getGridText();
+        } else if(split[0].equalsIgnoreCase("save")) {
+            save(split[1]);
+            return "Saved successfully!";
         } else if(command.isEmpty()) {
             return "";
         } else {
@@ -36,6 +44,72 @@ public class Spreadsheet implements Grid {
                 return updateCell(split);
             }
         }
+    }
+
+    public void save(String file) {
+        if(System.getProperty("os.name").equals("Linux")) {
+            for(int row = 0; row < getRows(); row++) {
+                for (int col = 0; col < getCols(); col++) {
+                    char colLetter = switch (col) {
+                        case 0 -> 'A';
+                        case 1 -> 'B';
+                        case 2 -> 'C';
+                        case 3 -> 'D';
+                        case 4 -> 'E';
+                        case 5 -> 'F';
+                        case 6 -> 'G';
+                        case 7 -> 'H';
+                        case 8 -> 'I';
+                        case 9 -> 'J';
+                        case 10 -> 'K';
+                        case 11 -> 'L';
+                        default -> throw new IllegalStateException("Unexpected value: " + col);
+                    };
+                    int rowAdjusted = row + 1;
+
+                    String type = getType(row, col);
+                    try {
+                        String fullFilePath = System.getProperty("user.home") + "/Downloads/" + file;
+                        System.out.println(fullFilePath);
+                        File testFile = new File(fullFilePath);
+                        System.out.println(testFile.toString());
+                        testFile.createNewFile();
+                        try {
+                            FileWriter f = new FileWriter(testFile);
+                            System.out.println(f.toString());
+                            f.write(colLetter + rowAdjusted + "," + type + "," + cells[row][col].fullCellText());
+                        } catch(IOException e) {
+                            System.out.println("An IOException occurred:");
+                            e.printStackTrace();
+                        }
+                    } catch (Exception e) {
+                        System.out.println("An error occurred:");
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    private String getType(int row, int col) {
+        String type;
+
+        if (cells[row][col] instanceof TextCell) {
+            type = "TextCell";
+        } else if (cells[row][col] instanceof FormulaCell) {
+            type = "FormulaCell";
+        } else if (cells[row][col] instanceof PercentCell) {
+            type = "PercentCell";
+        } else if (cells[row][col] instanceof ValueCell) {
+            type = "ValueCell";
+        } else {
+            type = "RealCell";
+        }
+        return type;
+    }
+
+    public void open(String file) {
+
     }
 
     public void clearAll() {
