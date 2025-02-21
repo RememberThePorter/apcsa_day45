@@ -4,6 +4,9 @@ import RememberThePorter.Interfaces.Cell;
 import RememberThePorter.Interfaces.Grid;
 import RememberThePorter.Interfaces.Location;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+
 public class Spreadsheet implements Grid {
     private Cell[][] cells;
 
@@ -27,6 +30,13 @@ public class Spreadsheet implements Grid {
                 clearCell(split[1]);
             }
             return getGridText();
+        } else if(split[0].equalsIgnoreCase("save")) {
+            try {
+                save(split[1]);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return "Saved successfully!";
         } else if(command.isEmpty()) {
             return "";
         } else {
@@ -36,6 +46,69 @@ public class Spreadsheet implements Grid {
                 return updateCell(split);
             }
         }
+    }
+
+    public void save(String file) throws IOException {
+        if(System.getProperty("os.name").equals("Linux")) {
+            String fullFilePath = System.getProperty("user.home") + "/Downloads/" + file;
+            File testFile = new File(fullFilePath);
+            if(!testFile.exists()) {
+                testFile.createNewFile();
+            }
+            PrintWriter writer = new PrintWriter(fullFilePath, StandardCharsets.UTF_8);
+
+            for(int row = 0; row < getRows(); row++) {
+                for (int col = 0; col < getCols(); col++) {
+                    String colLetter = switch (col) {
+                        case 0 -> "A";
+                        case 1 -> "B";
+                        case 2 -> "C";
+                        case 3 -> "D";
+                        case 4 -> "E";
+                        case 5 -> "F";
+                        case 6 -> "G";
+                        case 7 -> "H";
+                        case 8 -> "I";
+                        case 9 -> "J";
+                        case 10 -> "K";
+                        case 11 -> "L";
+                        default -> throw new IllegalStateException("Unexpected value: " + col);
+                    };
+                    int rowAdjusted = row + 1;
+
+                    String type = getType(row, col);
+                    if(!type.equals("EmptyCell")) {
+                        String toPrint = colLetter + rowAdjusted + "," + type + "," + cells[row][col].fullCellText();
+                        System.out.println(toPrint);
+                        writer.println(toPrint);
+                    }
+                }
+            }
+            writer.close();
+        }
+    }
+
+    private String getType(int row, int col) {
+        String type;
+
+        if(cells[row][col] instanceof TextCell) {
+            type = "TextCell";
+        } else if(cells[row][col] instanceof FormulaCell) {
+            type = "FormulaCell";
+        } else if(cells[row][col] instanceof PercentCell) {
+            type = "PercentCell";
+        } else if(cells[row][col] instanceof ValueCell) {
+            type = "ValueCell";
+        } else if(cells[row][col] instanceof EmptyCell) {
+            type = "EmptyCell";
+        } else {
+            type = "RealCell";
+        }
+        return type;
+    }
+
+    public void open(String file) {
+
     }
 
     public void clearAll() {
