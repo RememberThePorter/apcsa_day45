@@ -57,23 +57,12 @@ public class Spreadsheet implements Grid {
         }
     }
 
-    public String getFullFilePath(String file) throws FileSystemException {
-        if(System.getProperty("os.name").equals("Linux") || System.getProperty("os.name").equals("Mac OS X")) {
-            return System.getProperty("user.home") + "/Downloads/" + file;
-        } else if(System.getProperty("os.name").contains("Windows")) {
-            return System.getProperty("user.home") + "\\Downloads\\" + file;
-        } else {
-            throw new FileSystemException("Invalid operating system.");
-        }
-    }
-
     public void save(String file) throws IOException {
-        String fullFilePath = getFullFilePath(file);
-        File testFile = new File(fullFilePath);
+        File testFile = new File(file);
         if(!testFile.exists()) {
             testFile.createNewFile();
         }
-        PrintWriter writer = new PrintWriter(fullFilePath, StandardCharsets.UTF_8);
+        PrintWriter writer = new PrintWriter(file, StandardCharsets.UTF_8);
 
         for(int row = 0; row < getRows(); row++) {
             for (int col = 0; col < getCols(); col++) {
@@ -124,14 +113,21 @@ public class Spreadsheet implements Grid {
     }
 
     public String open(String file) throws IOException {
-        String fullFilePath = getFullFilePath(file);
-        String contents = Files.readString(Path.of(fullFilePath), StandardCharsets.UTF_8);
+//        String fullFilePath = getFullFilePath(file);
+        String contents = Files.readString(Path.of(file), StandardCharsets.UTF_8);
         String[] contentsSplit = contents.split("\n");
         for(String s : contentsSplit) {
             String[] splitSquared = s.split(",");
             if(splitSquared[1].equals("PercentCell")) {
                 String[] splitCubed = splitSquared[2].split("\\.", 2);
-                String percentConverted = (Integer.parseInt(splitCubed[0]) * 100) + splitCubed[1] + "%";
+                String percentConverted;
+                if(splitCubed[1].length() > 2) {
+                    int whole = (Integer.parseInt(splitCubed[0]) * 100) + Integer.parseInt(splitCubed[1].substring(0, 2));
+                    String decimal = splitCubed[1].substring(2);
+                    percentConverted = whole + "." + decimal + "%";
+                } else {
+                    percentConverted = (Integer.parseInt(splitCubed[0]) * 100) + splitCubed[1] + "%";
+                }
                 if(percentConverted.startsWith("0")) {
                     percentConverted = percentConverted.substring(1);
                 }
