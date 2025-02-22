@@ -129,7 +129,16 @@ public class Spreadsheet implements Grid {
         String[] contentsSplit = contents.split("\n");
         for(String s : contentsSplit) {
             String[] splitSquared = s.split(",");
-            processCommand(splitSquared[0] + " = " + splitSquared[2]);
+            if(splitSquared[1].equals("PercentCell")) {
+                String[] splitCubed = splitSquared[2].split("\\.", 2);
+                String percentConverted = (Integer.parseInt(splitCubed[0]) * 100) + splitCubed[1] + "%";
+                if(percentConverted.startsWith("0")) {
+                    percentConverted = percentConverted.substring(1);
+                }
+                processCommand(splitSquared[0] + " = " + percentConverted);
+            } else {
+                processCommand(splitSquared[0] + " = " + splitSquared[2]);
+            }
         }
         return getGridText();
     }
