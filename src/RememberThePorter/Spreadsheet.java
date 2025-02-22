@@ -79,7 +79,6 @@ public class Spreadsheet implements Grid {
                     String type = getType(row, col);
                     if(!type.equals("EmptyCell")) {
                         String toPrint = colLetter + rowAdjusted + "," + type + "," + cells[row][col].fullCellText();
-                        System.out.println(toPrint);
                         writer.println(toPrint);
                     }
                 }
