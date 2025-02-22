@@ -6,6 +6,9 @@ import RememberThePorter.Interfaces.Location;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystemException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class Spreadsheet implements Grid {
     private Cell[][] cells;
@@ -37,6 +40,12 @@ public class Spreadsheet implements Grid {
                 throw new RuntimeException(e);
             }
             return "Saved successfully!";
+        } else if(split[0].equalsIgnoreCase("open")) {
+            try {
+                return open(split[1]);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } else if(command.isEmpty()) {
             return "";
         } else {
@@ -48,43 +57,51 @@ public class Spreadsheet implements Grid {
         }
     }
 
+    public String getFullFilePath(String file) throws FileSystemException {
+        if(System.getProperty("os.name").equals("Linux") || System.getProperty("os.name").equals("Mac OS X")) {
+            return System.getProperty("user.home") + "/Downloads/" + file;
+        } else if(System.getProperty("os.name").contains("Windows")) {
+            return System.getProperty("user.home") + "\\Downloads\\" + file;
+        } else {
+            throw new FileSystemException("Invalid operating system.");
+        }
+    }
+
     public void save(String file) throws IOException {
-        if(System.getProperty("os.name").equals("Linux")) {
-            String fullFilePath = System.getProperty("user.home") + "/Downloads/" + file;
-            File testFile = new File(fullFilePath);
-            if(!testFile.exists()) {
-                testFile.createNewFile();
-            }
-            PrintWriter writer = new PrintWriter(fullFilePath, StandardCharsets.UTF_8);
+        String fullFilePath = getFullFilePath(file);
+        File testFile = new File(fullFilePath);
+        if(!testFile.exists()) {
+            testFile.createNewFile();
+        }
+        PrintWriter writer = new PrintWriter(fullFilePath, StandardCharsets.UTF_8);
 
-            for(int row = 0; row < getRows(); row++) {
-                for (int col = 0; col < getCols(); col++) {
-                    String colLetter = switch (col) {
-                        case 0 -> "A";
-                        case 1 -> "B";
-                        case 2 -> "C";
-                        case 3 -> "D";
-                        case 4 -> "E";
-                        case 5 -> "F";
-                        case 6 -> "G";
-                        case 7 -> "H";
-                        case 8 -> "I";
-                        case 9 -> "J";
-                        case 10 -> "K";
-                        case 11 -> "L";
-                        default -> throw new IllegalStateException("Unexpected value: " + col);
-                    };
-                    int rowAdjusted = row + 1;
+        for(int row = 0; row < getRows(); row++) {
+            for (int col = 0; col < getCols(); col++) {
+                String colLetter = switch (col) {
+                    case 0 -> "A";
+                    case 1 -> "B";
+                    case 2 -> "C";
+                    case 3 -> "D";
+                    case 4 -> "E";
+                    case 5 -> "F";
+                    case 6 -> "G";
+                    case 7 -> "H";
+                    case 8 -> "I";
+                    case 9 -> "J";
+                    case 10 -> "K";
+                    case 11 -> "L";
+                    default -> throw new IllegalStateException("Unexpected value: " + col);
+                };
+                int rowAdjusted = row + 1;
 
-                    String type = getType(row, col);
-                    if(!type.equals("EmptyCell")) {
-                        String toPrint = colLetter + rowAdjusted + "," + type + "," + cells[row][col].fullCellText();
-                        writer.println(toPrint);
-                    }
+                String type = getType(row, col);
+                if(!type.equals("EmptyCell")) {
+                    String toPrint = colLetter + rowAdjusted + "," + type + "," + cells[row][col].fullCellText();
+                    writer.println(toPrint);
                 }
             }
-            writer.close();
         }
+        writer.close();
     }
 
     private String getType(int row, int col) {
@@ -106,8 +123,15 @@ public class Spreadsheet implements Grid {
         return type;
     }
 
-    public void open(String file) {
-
+    public String open(String file) throws IOException {
+        String fullFilePath = getFullFilePath(file);
+        String contents = Files.readString(Path.of(fullFilePath), StandardCharsets.UTF_8);
+        String[] contentsSplit = contents.split("\n");
+        for(String s : contentsSplit) {
+            String[] splitSquared = s.split(",");
+            processCommand(splitSquared[0] + " = " + splitSquared[2]);
+        }
+        return getGridText();
     }
 
     public void clearAll() {
