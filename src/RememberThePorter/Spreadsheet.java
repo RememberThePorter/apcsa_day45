@@ -112,7 +112,6 @@ public class Spreadsheet implements Grid {
     }
 
     public String open(String file) throws IOException {
-//        String fullFilePath = getFullFilePath(file);
         String contents = Files.readString(Path.of(file), StandardCharsets.UTF_8);
         String[] contentsSplit = contents.split("\n");
         for(String s : contentsSplit) {
