@@ -10,9 +10,10 @@ public class TestRunner {
     static List<Map.Entry<String, Class<?>[]>> tests = new ArrayList<Map.Entry<String, Class<?>[]>>();
     static {
         tests.add(new SimpleImmutableEntry("Part A", new Class<?>[] { TestsALL.A_Checkpoint1.class, TestsALL.A_Checkpoint2.class, TestsALL.A_Checkpoint3.class, TestsALL.A_Final.class }));
+        tests.add(new SimpleImmutableEntry("Extra Credit A", new Class<?>[] { TestsALL.ExtraCreditCommandErrors.class, TestsALL.ExtraCreditCommandHistory.class, TestsALL.ExtraCreditCircularReferenceErrors.class, TestsALL.ExtraCreditEvaluationErrors.class, TestsALL.ExtraCreditOperationOrder.class }));
         tests.add(new SimpleImmutableEntry("Part B", new Class<?>[] { TestsALL.B_Checkpoint1.class, TestsALL.B_Final.class }));
         tests.add(new SimpleImmutableEntry("Part C", new Class<?>[] { TestsALL.C_Checkpoint1.class, TestsALL.C_Final.class }));
-        tests.add(new SimpleImmutableEntry("Extra Credit", new Class<?>[] { TestsALL.ExtraCreditCommandErrors.class, TestsALL.ExtraCreditCommandHistory.class, TestsALL.ExtraCreditCircularReferenceErrors.class, TestsALL.ExtraCreditEvaluationErrors.class, TestsALL.ExtraCreditOperationOrder.class, TestsALL.C_ExtraCreditHeterogeneousSorting.class }));
+        tests.add(new SimpleImmutableEntry("Extra Credit C", new Class<?>[] { TestsALL.C_ExtraCreditHeterogeneousSorting.class }));
     }
 
     public static void Run(String suite) {
