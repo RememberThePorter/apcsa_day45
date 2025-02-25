@@ -24,14 +24,14 @@ public class Spreadsheet implements Grid {
 
     @Override
     public String processCommand(String command) {
+        command = command.stripLeading();
         String[] split = command.split(" ", 3);
         if(split[0].equalsIgnoreCase("clear")) {
             if(split.length == 1) {
-                clearAll();
+                return clearAll();
             } else {
-                clearCell(split[1]);
+                return clearCell(split[1]);
             }
-            return getGridText();
         } else if(split[0].equalsIgnoreCase("save")) {
             try {
                 save(split[1]);
@@ -49,9 +49,17 @@ public class Spreadsheet implements Grid {
             return "";
         } else {
             if(split.length == 1) {
-                return inspectCell(split[0]);
+                if(command.contains("=")) {
+                    return "ERROR: No spaces.";
+                } else {
+                    return inspectCell(split[0]);
+                }
             } else {
-                return updateCell(split);
+                if(command.contains("=")) {
+                    return updateCell(split);
+                } else {
+                    return "ERROR: No equals.";
+                }
             }
         }
     }
@@ -137,29 +145,61 @@ public class Spreadsheet implements Grid {
         return getGridText();
     }
 
-    public void clearAll() {
+    public String clearAll() {
         for(int row = 0; row < getRows(); row++) {
             for(int col = 0; col < getCols(); col++) {
                 cells[row][col] = new EmptyCell();
             }
         }
+        return getGridText();
     }
 
-    public void clearCell(String loc) {
+    public String clearCell(String loc) {
         int[] coords = getCoordinates(loc);
 
+        if(coords[0] >= getRows() || coords[0] < 0 || coords[1] >= getCols() || coords[1] < 0) {
+            return "ERROR: Out of bounds.";
+        }
+
         cells[coords[0]][coords[1]] = new EmptyCell();
+        return getGridText();
     }
 
     public String inspectCell(String loc) {
-        int[] coords = getCoordinates(loc);
-
-        return cells[coords[0]][coords[1]].fullCellText();
+        if(loc.startsWith("A") || loc.startsWith("B") || loc.startsWith("C") || loc.startsWith("D") || loc.startsWith("E") || loc.startsWith("F") || loc.startsWith("G") || loc.startsWith("H") || loc.startsWith("I") || loc.startsWith("J") || loc.startsWith("K") || loc.startsWith("L")) {
+            if(Integer.parseInt(loc.substring(1)) > 0 && Integer.parseInt(loc.substring(1)) < getRows()) {
+                SpreadsheetLocation sheetloc = new SpreadsheetLocation(loc);
+                int row = sheetloc.getRow();
+                int col = sheetloc.getCol();
+                if (row >= getRows() || row < 0 || col >= getCols() || col < 0) {
+                    return "ERROR: Out of bounds.";
+                }
+                return cells[row][col].fullCellText();
+            } else {
+                return "ERROR: Invalid cell.";
+            }
+        } else {
+            return "ERROR: Invalid cell.";
+        }
     }
 
     public String updateCell(String[] command) {
         if(command[1].equals("=")) {
+            final String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
             int[] coords = getCoordinates(command[0]);
+            if(coords[0] >= getRows() || coords[0] < 0 || coords[1] >= getCols() || coords[1] < 0) {
+                return "ERROR: Out of bounds.";
+            }
+
+            boolean containsLetter = false;
+            for(int i = 0; i < 26; i++) {
+                if(command[2].toUpperCase().contains(String.valueOf(LETTERS.charAt(i)))) {
+                    containsLetter = true;
+                    break;
+                }
+            }
+
             if(command[2].endsWith("%")) {
                 cells[coords[0]][coords[1]] = new PercentCell(command[2]);
                 return getGridText();
@@ -167,23 +207,39 @@ public class Spreadsheet implements Grid {
                 cells[coords[0]][coords[1]] = new TextCell(command[2]);
                 return getGridText();
             } else if(command[2].startsWith("(") && command[2].endsWith(")")) {
-                cells[coords[0]][coords[1]] = new FormulaCell(command[2]);
-                return getGridText();
+                if(command[2].startsWith("( ") || command[2].endsWith(" )")) {
+                    return "ERROR: Whitespace.";
+                } else {
+                    cells[coords[0]][coords[1]] = new FormulaCell(command[2]);
+                    return getGridText();
+                }
+            } else if(command[2].contains(" ") && (!command[2].contains("(") || !command[2].contains(")"))) {
+                return "ERROR: No parentheses.";
+            } else if(containsLetter && (!command[2].startsWith("\"") || !command[2].endsWith("\""))) {
+                return "ERROR: No quotes.";
+            } else if(command[2].endsWith(".")) {
+                return "ERROR: Ends in period.";
+            } else if(command[2].startsWith("*")) {
+                return "ERROR: Invalid special character.";
             } else {
                 cells[coords[0]][coords[1]] = new ValueCell(command[2]);
                 return getGridText();
             }
         } else {
-            return("Error: No equals");
+            return("ERROR: No equals.");
         }
     }
 
     public int[] getCoordinates(String loc) {
         SpreadsheetLocation sheetloc = new SpreadsheetLocation(loc);
-        int row = sheetloc.getRow();
-        int col = sheetloc.getCol();
+        try {
+            int row = sheetloc.getRow();
+            int col = sheetloc.getCol();
+            return new int[] {row, col};
+        } catch(IndexOutOfBoundsException e) {
+            return new int[] {-1, -1};
+        }
 
-        return new int[] {row, col};
     }
 
     @Override
