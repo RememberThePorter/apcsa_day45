@@ -53,10 +53,14 @@ public class Spreadsheet implements Grid {
             return "";
         } else {
             if(split.length == 1) {
-                try {
-                    return inspectCell(split[0]);
-                } catch(Exception e) {
-                    return "Invalid command.";
+                if(split[0].equalsIgnoreCase("show")) {
+                    return getGridText();
+                } else {
+                    try {
+                        return inspectCell(split[0]);
+                    } catch (Exception e) {
+                        return "Invalid command.";
+                    }
                 }
             } else {
                 try {
