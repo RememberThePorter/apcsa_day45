@@ -29,29 +29,41 @@ public class Spreadsheet implements Grid {
             if(split.length == 1) {
                 clearAll();
             } else {
-                clearCell(split[1]);
+                try {
+                    clearCell(split[1]);
+                } catch(Exception e) {
+                    return "Invalid cell.";
+                }
             }
             return getGridText();
         } else if(split[0].equalsIgnoreCase("save")) {
             try {
                 save(split[1]);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                return "Invalid file name.";
             }
             return "Saved successfully!";
         } else if(split[0].equalsIgnoreCase("open")) {
             try {
                 return open(split[1]);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                return "Invalid file name.";
             }
         } else if(command.isEmpty()) {
             return "";
         } else {
             if(split.length == 1) {
-                return inspectCell(split[0]);
+                try {
+                    return inspectCell(split[0]);
+                } catch(Exception e) {
+                    return "Invalid command.";
+                }
             } else {
-                return updateCell(split);
+                try {
+                    return updateCell(split);
+                } catch(Exception e) {
+                    return "Invalid command.";
+                }
             }
         }
     }
