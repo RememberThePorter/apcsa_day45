@@ -2,10 +2,14 @@ package RememberThePorter;
 
 import RememberThePorter.Interfaces.Cell;
 
-public class EmptyCell implements Cell {
+public class RealCell implements Cell {
+    public double getDoubleValue() {
+        return 0.0;
+    }
+
     @Override
     public String abbreviatedCellText() {
-        return "          ";
+        return "";
     }
 
     @Override
