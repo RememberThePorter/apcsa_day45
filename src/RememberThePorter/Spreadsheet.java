@@ -11,15 +11,17 @@ import java.nio.file.Path;
 
 public class Spreadsheet implements Grid {
     private Cell[][] cells;
+    private String title;
 
-    public Spreadsheet() {
-        this.cells = new Cell[20][12];
+    public Spreadsheet(String title, int rows, int cols) {
+        this.cells = new Cell[rows][cols];
+        this.title = title;
 
-        for(int i = 0; i < cells.length; i++) {
-            for(int j = 0; j < cells[0].length; j++) {
-                cells[i][j] = new EmptyCell();
-            }
-        }
+        populateSheet();
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     @Override
@@ -213,14 +215,12 @@ public class Spreadsheet implements Grid {
         return new int[] {row, col};
     }
 
-    @Override
-    public int getRows() {
-        return 20;
+    private int getRows() {
+        return cells.length;
     }
 
-    @Override
-    public int getCols() {
-        return 12;
+    private int getCols() {
+        return cells[0].length;
     }
 
     @Override
@@ -230,7 +230,13 @@ public class Spreadsheet implements Grid {
 
     @Override
     public String getGridText() {
-        StringBuilder output = new StringBuilder("   |A         |B         |C         |D         |E         |F         |G         |H         |I         |J         |K         |L         |\n");
+        String alphabet = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        StringBuilder output = new StringBuilder("Current Spreadsheet: " + title + "\n   |");
+        for(int column = 1; column <= getCols(); column ++) {
+            output.append(alphabet.charAt(column) + "         |");
+        }
+        output.append("\n");
+
         for(int row = 0; row < getRows(); row++) {
             output.append(row + 1);
             if((row + 1) < 10) {
@@ -245,5 +251,13 @@ public class Spreadsheet implements Grid {
             output.append("\n");
         }
         return output.toString();
+    }
+
+    private void populateSheet() {
+        for(int i = 0; i < cells.length; i++) {
+            for(int j = 0; j < cells[0].length; j++) {
+                cells[i][j] = new EmptyCell();
+            }
+        }
     }
 }
