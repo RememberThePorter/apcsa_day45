@@ -36,14 +36,14 @@ public class Texcel {
     private static Spreadsheet newSheet() {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Enter spreadsheet title: ");
+        System.out.print("Enter spreadsheet title: ");
         String title = scanner.nextLine();
         while(title.isEmpty()) {
-            System.out.println("Title can't be blank! Enter a title: ");
+            System.out.print("Title can't be blank! Enter a title: ");
             title = scanner.nextLine();
         }
 
-        System.out.println("Enter number of rows for spreadsheet: ");
+        System.out.print("Enter number of rows for spreadsheet: ");
         int rows = scanValidNum();
 
         System.out.print("Enter number of columns to use for spreadsheet: ");
