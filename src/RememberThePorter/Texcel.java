@@ -11,8 +11,7 @@ public class Texcel {
     public static void main(String[] args) {
         sheets = new ArrayList<>();
         sheets.add(new Spreadsheet("Untitled Spreadsheet", 20, 12));
-        Spreadsheet sheet = sheets.getFirst();
-        currentSheet = sheet;
+        currentSheet = sheets.getFirst();
 
         Scanner scanner = new Scanner(System.in);
         while(true) {
@@ -20,21 +19,21 @@ public class Texcel {
             if(input.equalsIgnoreCase("quit")) {
                 break;
             } else {
-                System.out.println(sheet.processCommand(input));
+                System.out.println(processCommand(input));
             }
         }
         scanner.close();
     }
 
-    public static void processCommand(String command) {
+    public static String processCommand(String command) {
         if(command.equalsIgnoreCase("new")) {
-            newSheet();
+            return newSheet().getGridText();
         } else {
-            System.out.println(currentSheet.processCommand(command));
+            return currentSheet.processCommand(command);
         }
     }
 
-    private static void newSheet() {
+    private static Spreadsheet newSheet() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Enter spreadsheet title: ");
@@ -51,6 +50,8 @@ public class Texcel {
         int cols = scanValidNum();
 
         sheets.add(new Spreadsheet(title, rows, cols));
+        currentSheet = sheets.getLast();
+        return sheets.getLast();
     }
 
     private static int scanValidNum() {
