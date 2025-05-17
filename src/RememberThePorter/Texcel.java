@@ -26,8 +26,17 @@ public class Texcel {
     }
 
     public static String processCommand(String commandInputted) {
+        String[] commandSplitByWord = commandInputted.split(" ", 2);
         if(commandInputted.equalsIgnoreCase("new")) {
             return newSheet().getGridText();
+        } else if(commandSplitByWord[0].equalsIgnoreCase("load")) {
+            for (Spreadsheet sheet : sheets) {
+                if (sheet.getSpreadsheetTitle().equals(commandSplitByWord[1])) {
+                    currentSheet = sheet;
+                    return sheet.getSpreadsheetTitle() + "loaded.\n" + sheet.getGridText();
+                }
+            }
+            return "No such spreadsheet \"" + commandSplitByWord[1] + "\" found.";
         } else {
             return currentSheet.processCommand(commandInputted);
         }
