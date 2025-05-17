@@ -11,15 +11,13 @@ import java.nio.file.Path;
 
 public class Spreadsheet implements Grid {
     private Cell[][] cells;
+    private String title;
 
-    public Spreadsheet() {
-        this.cells = new Cell[20][12];
+    public Spreadsheet(String title, int rows, int cols) {
+        this.cells = new Cell[rows][cols];
+        this.title = title;
 
-        for(int i = 0; i < cells.length; i++) {
-            for(int j = 0; j < cells[0].length; j++) {
-                cells[i][j] = new EmptyCell();
-            }
-        }
+        populateSheet();
     }
 
     @Override
@@ -245,5 +243,13 @@ public class Spreadsheet implements Grid {
             output.append("\n");
         }
         return output.toString();
+    }
+
+    private void populateSheet() {
+        for(int i = 0; i < cells.length; i++) {
+            for(int j = 0; j < cells[0].length; j++) {
+                cells[i][j] = new EmptyCell();
+            }
+        }
     }
 }
