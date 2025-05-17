@@ -10,53 +10,57 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class Spreadsheet implements Grid {
-    private Cell[][] cells;
-    private String title;
+    private final Cell[][] CELLS;
+    private final String SPREADSHEET_TITLE;
+    private final int ROWS;
+    private final int COLUMNS;
 
     public Spreadsheet(String title, int rows, int cols) {
-        this.cells = new Cell[rows][cols];
-        this.title = title;
+        this.CELLS = new Cell[rows][cols];
+        this.SPREADSHEET_TITLE = title;
+        this.ROWS = CELLS.length;
+        this.COLUMNS = CELLS[0].length;
 
         populateSheet();
     }
 
-    public String getTitle() {
-        return title;
+    public String getSpreadsheetTitle() {
+        return SPREADSHEET_TITLE;
     }
 
     @Override
     public String processCommand(String command) {
-        String[] split = command.split(" ", 3);
-        if(split[0].equalsIgnoreCase("clear")) {
-            if(split.length == 1) {
+        String[] commandWords = command.split(" ", 3);
+        if(commandWords[0].equalsIgnoreCase("clear")) {
+            if(commandWords.length == 1) {
                 clearAll();
             } else {
                 try {
-                    clearCell(split[1]);
+                    clearCell(commandWords[1]);
                 } catch(Exception e) {
                     return "Invalid cell.";
                 }
             }
             return getGridText();
-        } else if(split[0].equalsIgnoreCase("save")) {
+        } else if(commandWords[0].equalsIgnoreCase("save")) {
             try {
-                save(split[1]);
+                save(commandWords[1]);
             } catch (Exception e) {
                 return "Invalid file name.";
             }
             return "Saved successfully!";
-        } else if(split[0].equalsIgnoreCase("open")) {
+        } else if(commandWords[0].equalsIgnoreCase("open")) {
             try {
-                return open(split[1]);
+                return open(commandWords[1]);
             } catch (Exception e) {
                 return "Invalid file name.";
             }
-        } else if(split[0].equalsIgnoreCase("help")) {
-            if(split.length == 1) {
+        } else if(commandWords[0].equalsIgnoreCase("help")) {
+            if(commandWords.length == 1) {
                 return Help.help();
             } else {
                 try {
-                    return Help.help(split[1]);
+                    return Help.help(commandWords[1]);
                 } catch(Exception e) {
                     return "Invalid command.";
                 }
@@ -64,19 +68,19 @@ public class Spreadsheet implements Grid {
         } else if(command.isEmpty()) {
             return "";
         } else {
-            if(split.length == 1) {
-                if(split[0].equalsIgnoreCase("show")) {
+            if(commandWords.length == 1) {
+                if(commandWords[0].equalsIgnoreCase("show")) {
                     return getGridText();
                 } else {
                     try {
-                        return inspectCell(split[0]);
+                        return inspectCell(commandWords[0]);
                     } catch (Exception e) {
                         return "Invalid command.";
                     }
                 }
             } else {
                 try {
-                    return updateCell(split);
+                    return updateCell(commandWords);
                 } catch(Exception e) {
                     return "Invalid command.";
                 }
@@ -85,82 +89,76 @@ public class Spreadsheet implements Grid {
     }
 
     public void save(String file) throws IOException {
-        File testFile = new File(file);
-        if(!testFile.exists()) {
-            testFile.createNewFile();
+        File fileToSave = new File(file);
+        if(!fileToSave.exists()) {
+            fileToSave.createNewFile();
         }
         PrintWriter writer = new PrintWriter(file, StandardCharsets.UTF_8);
 
         for(int row = 0; row < getRows(); row++) {
-            for (int col = 0; col < getCols(); col++) {
-                String colLetter = switch (col) {
-                    case 0 -> "A";
-                    case 1 -> "B";
-                    case 2 -> "C";
-                    case 3 -> "D";
-                    case 4 -> "E";
-                    case 5 -> "F";
-                    case 6 -> "G";
-                    case 7 -> "H";
-                    case 8 -> "I";
-                    case 9 -> "J";
-                    case 10 -> "K";
-                    case 11 -> "L";
-                    default -> throw new IllegalStateException("Unexpected value: " + col);
+            for (int column = 0; column < getColumns(); column++) {
+                char columnLetter = switch (column) {
+                    case 0 -> 'A';
+                    case 1 -> 'B';
+                    case 2 -> 'C';
+                    case 3 -> 'D';
+                    case 4 -> 'E';
+                    case 5 -> 'F';
+                    case 6 -> 'G';
+                    case 7 -> 'H';
+                    case 8 -> 'I';
+                    case 9 -> 'J';
+                    case 10 -> 'K';
+                    case 11 -> 'L';
+                    default -> throw new IllegalStateException("Unexpected value: " + column);
                 };
-                int rowAdjusted = row + 1;
+                int rowAdjustedForZeroIndex = row + 1;
 
-                String type = getType(row, col);
+                String type = getCellType(row, column);
                 if(!type.equals("EmptyCell")) {
-                    String toPrint = colLetter + rowAdjusted + "," + type + "," + cells[row][col].fullCellText();
-                    writer.println(toPrint);
+                    String stringToPrint = columnLetter + rowAdjustedForZeroIndex + "," + type + "," + CELLS[row][column].fullCellText();
+                    writer.println(stringToPrint);
                 }
             }
         }
         writer.close();
     }
 
-    private String getType(int row, int col) {
-        String type;
+    private String getCellType(int row, int column) {
+        String cellType = switch (CELLS[row][column]) {
+            case TextCell ignored -> "TextCell";
+            case FormulaCell ignored -> "FormulaCell";
+            case PercentCell ignored -> "PercentCell";
+            case ValueCell ignored -> "ValueCell";
+            case EmptyCell ignored -> "EmptyCell";
+            case null, default -> "RealCell";
+        };
 
-        if(cells[row][col] instanceof TextCell) {
-            type = "TextCell";
-        } else if(cells[row][col] instanceof FormulaCell) {
-            type = "FormulaCell";
-        } else if(cells[row][col] instanceof PercentCell) {
-            type = "PercentCell";
-        } else if(cells[row][col] instanceof ValueCell) {
-            type = "ValueCell";
-        } else if(cells[row][col] instanceof EmptyCell) {
-            type = "EmptyCell";
-        } else {
-            type = "RealCell";
-        }
-        return type;
+        return cellType;
     }
 
     public String open(String file) throws IOException {
         clearAll();
-        String contents = Files.readString(Path.of(file), StandardCharsets.UTF_8);
-        String[] contentsSplit = contents.split("\n");
-        for(String s : contentsSplit) {
-            String[] splitSquared = s.split(",");
-            if(splitSquared[1].equals("PercentCell")) {
-                String[] splitCubed = splitSquared[2].split("\\.", 2);
-                String percentConverted;
-                if(splitCubed[1].length() > 2) {
-                    int whole = (Integer.parseInt(splitCubed[0]) * 100) + Integer.parseInt(splitCubed[1].substring(0, 2));
-                    String decimal = splitCubed[1].substring(2);
-                    percentConverted = whole + "." + decimal + "%";
+        String fileContents = Files.readString(Path.of(file), StandardCharsets.UTF_8);
+        String[] contentLines = fileContents.split("\n");
+        for(String line : contentLines) {
+            String[] contentInformation = line.split(",");
+            if(contentInformation[1].equals("PercentCell")) {
+                String[] wholeAndDecimal = contentInformation[2].split("\\.", 2);
+                String percentFromDecimal;
+                if(wholeAndDecimal[1].length() > 2) {
+                    int whole = (Integer.parseInt(wholeAndDecimal[0]) * 100) + Integer.parseInt(wholeAndDecimal[1].substring(0, 2));
+                    String decimal = wholeAndDecimal[1].substring(2);
+                    percentFromDecimal = whole + "." + decimal + "%";
                 } else {
-                    percentConverted = (Integer.parseInt(splitCubed[0]) * 100) + splitCubed[1] + "%";
+                    percentFromDecimal = (Integer.parseInt(wholeAndDecimal[0]) * 100) + wholeAndDecimal[1] + "%";
                 }
-                if(percentConverted.startsWith("0")) {
-                    percentConverted = percentConverted.substring(1);
+                if(percentFromDecimal.startsWith("0")) {
+                    percentFromDecimal = percentFromDecimal.substring(1);
                 }
-                processCommand(splitSquared[0] + " = " + percentConverted);
+                processCommand(contentInformation[0] + " = " + percentFromDecimal);
             } else {
-                processCommand(splitSquared[0] + " = " + splitSquared[2]);
+                processCommand(contentInformation[0] + " = " + contentInformation[2]);
             }
         }
         return getGridText();
@@ -168,38 +166,38 @@ public class Spreadsheet implements Grid {
 
     public void clearAll() {
         for(int row = 0; row < getRows(); row++) {
-            for(int col = 0; col < getCols(); col++) {
-                cells[row][col] = new EmptyCell();
+            for(int column = 0; column < getColumns(); column++) {
+                CELLS[row][column] = new EmptyCell();
             }
         }
     }
 
-    public void clearCell(String loc) {
-        int[] coords = getCoordinates(loc);
+    public void clearCell(String cell) {
+        int[] coordinates = getCellCoordinates(cell);
 
-        cells[coords[0]][coords[1]] = new EmptyCell();
+        CELLS[coordinates[0]][coordinates[1]] = new EmptyCell();
     }
 
-    public String inspectCell(String loc) {
-        int[] coords = getCoordinates(loc);
+    public String inspectCell(String cell) {
+        int[] coordinates = getCellCoordinates(cell);
 
-        return cells[coords[0]][coords[1]].fullCellText();
+        return CELLS[coordinates[0]][coordinates[1]].fullCellText();
     }
 
     public String updateCell(String[] command) {
         if(command[1].equals("=")) {
-            int[] coords = getCoordinates(command[0]);
+            int[] coordinates = getCellCoordinates(command[0]);
             if(command[2].endsWith("%")) {
-                cells[coords[0]][coords[1]] = new PercentCell(command[2]);
+                CELLS[coordinates[0]][coordinates[1]] = new PercentCell(command[2]);
                 return getGridText();
             } else if(command[2].startsWith("\"") && command[2].endsWith("\"")) {
-                cells[coords[0]][coords[1]] = new TextCell(command[2]);
+                CELLS[coordinates[0]][coordinates[1]] = new TextCell(command[2]);
                 return getGridText();
             } else if(command[2].startsWith("(") && command[2].endsWith(")")) {
-                cells[coords[0]][coords[1]] = new FormulaCell(command[2]);
+                CELLS[coordinates[0]][coordinates[1]] = new FormulaCell(command[2]);
                 return getGridText();
             } else {
-                cells[coords[0]][coords[1]] = new ValueCell(command[2]);
+                CELLS[coordinates[0]][coordinates[1]] = new ValueCell(command[2]);
                 return getGridText();
             }
         } else {
@@ -207,56 +205,57 @@ public class Spreadsheet implements Grid {
         }
     }
 
-    public int[] getCoordinates(String loc) {
-        SpreadsheetLocation sheetloc = new SpreadsheetLocation(loc);
-        int row = sheetloc.getRow();
-        int col = sheetloc.getCol();
+    public int[] getCellCoordinates(String cell) {
+        SpreadsheetLocation spreadsheetLocation = new SpreadsheetLocation(cell);
+        int row = spreadsheetLocation.getRow();
+        int column = spreadsheetLocation.getColumn();
 
-        return new int[] {row, col};
+        return new int[] {row, column};
     }
 
     private int getRows() {
-        return cells.length;
+        return ROWS;
     }
+    
 
-    private int getCols() {
-        return cells[0].length;
+    private int getColumns() {
+        return COLUMNS;
     }
 
     @Override
-    public Cell getCell(Location loc) {
-        return cells[loc.getRow()][loc.getCol()];
+    public Cell getCell(Location location) {
+        return CELLS[location.getRow()][location.getColumn()];
     }
 
     @Override
     public String getGridText() {
         String alphabet = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        StringBuilder output = new StringBuilder("Current Spreadsheet: " + title + "\n   |");
-        for(int column = 1; column <= getCols(); column ++) {
-            output.append(alphabet.charAt(column) + "         |");
+        StringBuilder grid = new StringBuilder("Current Spreadsheet: " + SPREADSHEET_TITLE + "\n   |");
+        for(int column = 1; column <= getColumns(); column ++) {
+            grid.append(alphabet.charAt(column) + "         |");
         }
-        output.append("\n");
+        grid.append("\n");
 
         for(int row = 0; row < getRows(); row++) {
-            output.append(row + 1);
+            grid.append(row + 1);
             if((row + 1) < 10) {
-                output.append(" ");
+                grid.append(" ");
             }
-            output.append(" |");
-            for(int col = 0; col < getCols(); col++) {
-                output.append(cells[row][col].abbreviatedCellText());
-                output.append(" ".repeat(Math.max(0, (10 - cells[row][col].abbreviatedCellText().length()))));
-                output.append("|");
+            grid.append(" |");
+            for(int column = 0; column < getColumns(); column++) {
+                grid.append(CELLS[row][column].abbreviatedCellText());
+                grid.append(" ".repeat(Math.max(0, (10 - CELLS[row][column].abbreviatedCellText().length()))));
+                grid.append("|");
             }
-            output.append("\n");
+            grid.append("\n");
         }
-        return output.toString();
+        return grid.toString();
     }
 
     private void populateSheet() {
-        for(int i = 0; i < cells.length; i++) {
-            for(int j = 0; j < cells[0].length; j++) {
-                cells[i][j] = new EmptyCell();
+        for(int row = 0; row < CELLS.length; row++) {
+            for(int column = 0; column < CELLS[0].length; column++) {
+                CELLS[row][column] = new EmptyCell();
             }
         }
     }

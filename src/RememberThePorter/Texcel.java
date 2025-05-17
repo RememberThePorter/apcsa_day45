@@ -15,21 +15,21 @@ public class Texcel {
 
         Scanner scanner = new Scanner(System.in);
         while(true) {
-            String input = scanner.nextLine();
-            if(input.equalsIgnoreCase("quit")) {
+            String inputtedCommand = scanner.nextLine();
+            if(inputtedCommand.equalsIgnoreCase("quit")) {
                 break;
             } else {
-                System.out.println(processCommand(input));
+                System.out.println(processCommand(inputtedCommand));
             }
         }
         scanner.close();
     }
 
-    public static String processCommand(String command) {
-        if(command.equalsIgnoreCase("new")) {
+    public static String processCommand(String commandInputted) {
+        if(commandInputted.equalsIgnoreCase("new")) {
             return newSheet().getGridText();
         } else {
-            return currentSheet.processCommand(command);
+            return currentSheet.processCommand(commandInputted);
         }
     }
 
@@ -37,33 +37,33 @@ public class Texcel {
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Enter spreadsheet title: ");
-        String title = scanner.nextLine();
-        while(title.isEmpty()) {
+        String spreadsheetTitle = scanner.nextLine();
+        while(spreadsheetTitle.isEmpty()) {
             System.out.print("Title can't be blank! Enter a title: ");
-            title = scanner.nextLine();
+            spreadsheetTitle = scanner.nextLine();
         }
 
         System.out.print("Enter number of rows for spreadsheet: ");
-        int rows = scanValidNum();
+        int rows = scanValidNumber();
 
         System.out.print("Enter number of columns to use for spreadsheet: ");
-        int cols = scanValidNum();
+        int cols = scanValidNumber();
 
-        sheets.add(new Spreadsheet(title, rows, cols));
+        sheets.add(new Spreadsheet(spreadsheetTitle, rows, cols));
         currentSheet = sheets.getLast();
         return sheets.getLast();
     }
 
-    private static int scanValidNum() {
+    private static int scanValidNumber() {
         Scanner scanner = new Scanner(System.in);
 
-        int num;
+        int number;
         try {
-            num = scanner.nextInt();
+            number = scanner.nextInt();
         } catch(InputMismatchException e) {
             System.out.print("You must enter a valid number! Enter a valid number: ");
-            num = scanValidNum();
+            number = scanValidNumber();
         }
-        return num;
+        return number;
     }
 }

@@ -9,21 +9,21 @@ public class PercentCell extends RealCell {
 
     @Override
     public double getDoubleValue() {
-        return Double.parseDouble(this.percent.substring(0, this.percent.length() - 1)) / 100;
+        return Double.parseDouble(percent.substring(0, percent.length() - 1)) / 100;
     }
 
     @Override
     public String abbreviatedCellText() {
-        StringBuilder abbreviated = new StringBuilder(this.percent);
-        if(abbreviated.toString().contains(".")) {
-            abbreviated = new StringBuilder(abbreviated.substring(0, abbreviated.indexOf(".")) + "%");
+        StringBuilder abbreviatedCellText = new StringBuilder(percent);
+        if(abbreviatedCellText.toString().contains(".")) {
+            abbreviatedCellText = new StringBuilder(abbreviatedCellText.substring(0, abbreviatedCellText.indexOf(".")) + "%");
         }
-        if(abbreviated.length() > 10) {
-            abbreviated = new StringBuilder(abbreviated.substring(0, 10));
-        } else if(abbreviated.length() < 10) {
-            abbreviated.append(" ".repeat(Math.max(0, 10 - abbreviated.length())));
+        if(abbreviatedCellText.length() > 10) {
+            abbreviatedCellText = new StringBuilder(abbreviatedCellText.substring(0, 10));
+        } else if(abbreviatedCellText.length() < 10) {
+            abbreviatedCellText.append(" ".repeat(Math.max(0, 10 - abbreviatedCellText.length())));
         }
-        return abbreviated.toString();
+        return abbreviatedCellText.toString();
     }
 
     @Override

@@ -14,20 +14,20 @@ public class FormulaCell extends RealCell {
 
     @Override
     public String abbreviatedCellText() {
-        StringBuilder abbreviated = new StringBuilder(this.formula);
-        if(this.formula.startsWith("\"") && this.formula.endsWith("\"")) {
-            abbreviated = new StringBuilder(this.formula.substring(1, this.formula.length() - 1));
+        StringBuilder abbreviatedCellText = new StringBuilder(formula);
+        if(formula.startsWith("\"") && formula.endsWith("\"")) {
+            abbreviatedCellText = new StringBuilder(formula.substring(1, formula.length() - 1));
         }
-        if(abbreviated.length() > 10) {
-            abbreviated = new StringBuilder(abbreviated.substring(0, 10));
-        } else if(abbreviated.length() < 10) {
-            abbreviated.append(" ".repeat(Math.max(0, 10 - abbreviated.length())));
+        if(abbreviatedCellText.length() > 10) {
+            abbreviatedCellText = new StringBuilder(abbreviatedCellText.substring(0, 10));
+        } else if(abbreviatedCellText.length() < 10) {
+            abbreviatedCellText.append(" ".repeat(Math.max(0, 10 - abbreviatedCellText.length())));
         }
-        return abbreviated.toString();
+        return abbreviatedCellText.toString();
     }
 
     @Override
     public String fullCellText() {
-        return this.formula;
+        return formula;
     }
 }

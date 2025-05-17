@@ -14,11 +14,11 @@ public interface Grid
         return 0;
     }
 
-    private int getCols() // returns number of columns in grid
+    private int getColumns() // returns number of columns in grid
     {
         return 0;
     }
 
-    Cell getCell(Location loc); // returns cell at loc
+    Cell getCell(Location location); // returns cell at loc
     String getGridText(); // returns entire grid, formatted as text for display
 }
