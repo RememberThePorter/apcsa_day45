@@ -20,6 +20,10 @@ public class Spreadsheet implements Grid {
         populateSheet();
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     @Override
     public String processCommand(String command) {
         String[] split = command.split(" ", 3);
@@ -211,14 +215,12 @@ public class Spreadsheet implements Grid {
         return new int[] {row, col};
     }
 
-    @Override
-    public int getRows() {
-        return 20;
+    private int getRows() {
+        return cells.length;
     }
 
-    @Override
-    public int getCols() {
-        return 12;
+    private int getCols() {
+        return cells[0].length;
     }
 
     @Override
@@ -228,7 +230,13 @@ public class Spreadsheet implements Grid {
 
     @Override
     public String getGridText() {
-        StringBuilder output = new StringBuilder("   |A         |B         |C         |D         |E         |F         |G         |H         |I         |J         |K         |L         |\n");
+        String alphabet = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        StringBuilder output = new StringBuilder("Current Spreadsheet: " + title + "\n   |");
+        for(int column = 1; column <= getCols(); column ++) {
+            output.append(alphabet.charAt(column) + "         |");
+        }
+        output.append("\n");
+
         for(int row = 0; row < getRows(); row++) {
             output.append(row + 1);
             if((row + 1) < 10) {
