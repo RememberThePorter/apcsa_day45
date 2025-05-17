@@ -49,6 +49,16 @@ public class Spreadsheet implements Grid {
             } catch (Exception e) {
                 return "Invalid file name.";
             }
+        } else if(split[0].equalsIgnoreCase("help")) {
+            if(split.length == 1) {
+                return Help.help();
+            } else {
+                try {
+                    return Help.help(split[1]);
+                } catch(Exception e) {
+                    return "Invalid command.";
+                }
+            }
         } else if(command.isEmpty()) {
             return "";
         } else {
