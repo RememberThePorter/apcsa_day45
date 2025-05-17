@@ -2,7 +2,7 @@ package RememberThePorter;
 
 import java.util.Scanner;
 
-public class TextExcel {
+public class Texcel {
     public static void main(String[] args) {
         Spreadsheet sheet = new Spreadsheet();
         Scanner scanner = new Scanner(System.in);

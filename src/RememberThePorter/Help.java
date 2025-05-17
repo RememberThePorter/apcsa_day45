@@ -35,12 +35,12 @@ public class Help {
 
     private static String helpSave() {
         return "Entering \"save\" followed by a file name saves the current state of the spreadsheet to the indicated file.\n" +
-                "TextExcel's CSV format is not compatible with Google Sheets or Microsoft Excel.";
+                "Texcel's CSV format is not compatible with Google Sheets or Microsoft Excel.";
     }
 
     private static String helpOpen() {
         return "Entering \"open\" followed by a file name opens the spreadsheet contained in the indicated file.\n" +
-                "Google Sheets' and Microsoft Excel's CSV formats are not compatible with TextExcel.";
+                "Google Sheets' and Microsoft Excel's CSV formats are not compatible with Texcel.";
     }
 
     private static String helpShow() {
