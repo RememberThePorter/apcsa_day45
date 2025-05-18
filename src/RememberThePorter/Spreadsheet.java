@@ -95,23 +95,10 @@ public class Spreadsheet implements Grid {
         }
         PrintWriter writer = new PrintWriter(file, StandardCharsets.UTF_8);
 
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         for(int row = 0; row < getRows(); row++) {
             for (int column = 0; column < getColumns(); column++) {
-                char columnLetter = switch (column) {
-                    case 0 -> 'A';
-                    case 1 -> 'B';
-                    case 2 -> 'C';
-                    case 3 -> 'D';
-                    case 4 -> 'E';
-                    case 5 -> 'F';
-                    case 6 -> 'G';
-                    case 7 -> 'H';
-                    case 8 -> 'I';
-                    case 9 -> 'J';
-                    case 10 -> 'K';
-                    case 11 -> 'L';
-                    default -> throw new IllegalStateException("Unexpected value: " + column);
-                };
+                char columnLetter = alphabet.charAt(column);
                 int rowAdjustedForZeroIndex = row + 1;
 
                 String type = getCellType(row, column);
