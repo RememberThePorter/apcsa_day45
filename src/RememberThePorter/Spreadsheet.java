@@ -97,7 +97,7 @@ public class Spreadsheet implements Grid {
     }
 
     public boolean save(String file) throws IOException {
-        boolean savedSuccessfully = false;
+        boolean savedSuccessfully;
 
         String fullFilePath;
 
