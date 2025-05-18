@@ -142,6 +142,7 @@ public class Spreadsheet implements Grid {
 
         try {
             writer.write(textToSave);
+            savedSuccessfully = true;
         } catch(Exception e) {
             savedSuccessfully = false;
         }
