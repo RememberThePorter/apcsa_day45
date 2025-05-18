@@ -43,12 +43,19 @@ public class Spreadsheet implements Grid {
             }
             return getGridText();
         } else if(commandWords[0].equalsIgnoreCase("save")) {
+            boolean savedSuccessfully;
+
             try {
-                save(commandWords[1]);
+                savedSuccessfully = save(commandWords[1]);
             } catch (Exception e) {
                 return "Invalid file name.";
             }
-            return "Saved successfully!";
+
+            if(savedSuccessfully) {
+                return "Saved successfully!";
+            } else {
+                return "Save unsuccessful.";
+            }
         } else if(commandWords[0].equalsIgnoreCase("open")) {
             try {
                 return open(commandWords[1]);
@@ -88,7 +95,9 @@ public class Spreadsheet implements Grid {
         }
     }
 
-    public void save(String file) throws IOException {
+    public boolean save(String file) throws IOException {
+        boolean savedSuccessfully = false;
+
         File fileToSave = new File(file);
         if(!fileToSave.exists()) {
             fileToSave.createNewFile();
@@ -101,6 +110,16 @@ public class Spreadsheet implements Grid {
                 char columnLetter = alphabet.charAt(column);
                 int rowAdjustedForZeroIndex = row + 1;
 
+                if(System.getProperty("os.name").toLowerCase().contains("windows")) {
+                    savedSuccessfully = saveToWindows(file);
+                } else if(System.getProperty("os.name").toLowerCase().contains("mac")) {
+                    savedSuccessfully = saveToMac(file);
+                } else if(System.getProperty("os.name").toLowerCase().contains("linux")) {
+                    savedSuccessfully = saveToLinux(file);
+                } else {
+                    savedSuccessfully = false;
+                }
+
                 String type = getCellType(row, column);
                 if(!type.equals("EmptyCell")) {
                     String stringToPrint = columnLetter + rowAdjustedForZeroIndex + "," + type + "," + CELLS[row][column].fullCellText();
@@ -109,6 +128,21 @@ public class Spreadsheet implements Grid {
             }
         }
         writer.close();
+        return savedSuccessfully;
+    }
+
+    private boolean saveToLinux(String file) {
+        String fullFilePath = System.getProperty("user.home") + "/Downloads/" + file;
+        File fileToSave = new File(fullFilePath);
+
+        String textToSave = "";
+        for(int row = 0; row < getRows(); row++) {
+            String lineToSave = "";
+            for(int column = 0; column < getColumns(); column++) {
+                lineToSave = lineToSave + CELLS[row][column].fullCellText() + ",";
+            }
+            lineToSave = lineToSave.substring(0, lineToSave.length() - 1) + "\n";
+        }
     }
 
     private String getCellType(int row, int column) {
