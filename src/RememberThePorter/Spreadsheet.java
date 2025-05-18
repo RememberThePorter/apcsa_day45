@@ -8,6 +8,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Scanner;
 
 public class Spreadsheet implements Grid {
     private final Cell[][] CELLS;
@@ -98,27 +99,28 @@ public class Spreadsheet implements Grid {
     public boolean save(String file) throws IOException {
         boolean savedSuccessfully = false;
 
-        File fileToSave = new File(file);
+        String fullFilePath;
+
+        String os = System.getProperty("os.name").toLowerCase();
+        if(os.contains("windows")) {
+            fullFilePath = getWindowsFilePath(file);
+        } else if(os.contains("mac") || os.contains("linux")) {
+            fullFilePath = getMacOrLinuxFilePath(file);
+        } else {
+            return false;
+        }
+
+        File fileToSave = new File(fullFilePath);
         if(!fileToSave.exists()) {
             fileToSave.createNewFile();
         }
-        PrintWriter writer = new PrintWriter(file, StandardCharsets.UTF_8);
+        PrintWriter writer = new PrintWriter(fullFilePath, StandardCharsets.UTF_8);
 
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         for(int row = 0; row < getRows(); row++) {
             for (int column = 0; column < getColumns(); column++) {
                 char columnLetter = alphabet.charAt(column);
                 int rowAdjustedForZeroIndex = row + 1;
-
-                if(System.getProperty("os.name").toLowerCase().contains("windows")) {
-                    savedSuccessfully = saveToWindows(file);
-                } else if(System.getProperty("os.name").toLowerCase().contains("mac")) {
-                    savedSuccessfully = saveToMac(file);
-                } else if(System.getProperty("os.name").toLowerCase().contains("linux")) {
-                    savedSuccessfully = saveToLinux(file);
-                } else {
-                    savedSuccessfully = false;
-                }
 
                 String type = getCellType(row, column);
                 if(!type.equals("EmptyCell")) {
@@ -127,13 +129,6 @@ public class Spreadsheet implements Grid {
                 }
             }
         }
-        writer.close();
-        return savedSuccessfully;
-    }
-
-    private boolean saveToLinux(String file) {
-        String fullFilePath = System.getProperty("user.home") + "/Downloads/" + file;
-        File fileToSave = new File(fullFilePath);
 
         String textToSave = "";
         for(int row = 0; row < getRows(); row++) {
@@ -142,7 +137,54 @@ public class Spreadsheet implements Grid {
                 lineToSave = lineToSave + CELLS[row][column].fullCellText() + ",";
             }
             lineToSave = lineToSave.substring(0, lineToSave.length() - 1) + "\n";
+            textToSave = textToSave + lineToSave;
         }
+
+        try {
+            writer.write(textToSave);
+        } catch(Exception e) {
+            savedSuccessfully = false;
+        }
+
+        writer.close();
+        return savedSuccessfully;
+    }
+
+    private String getWindowsFilePath(String file) {
+        Scanner scanner = new Scanner(System.in);
+        String fullFilePath;
+
+        System.out.print("Where would you like to save the file? Leave blank to save to Downloads. ");
+        fullFilePath = scanner.nextLine();
+        if(fullFilePath.isEmpty()) {
+            fullFilePath = System.getProperty("user.home") + "\\Downloads\\" + file;
+        } else {
+            if(fullFilePath.endsWith("\\")) {
+                fullFilePath = fullFilePath + file;
+            } else {
+                fullFilePath = fullFilePath + "\\" + file;
+            }
+        }
+
+        return fullFilePath;
+    }
+
+    private String getMacOrLinuxFilePath(String file) {
+        Scanner scanner = new Scanner(System.in);
+        String fullFilePath;
+
+        System.out.print("Where would you like to save the file? Leave blank to save to Downloads. ");
+        fullFilePath = scanner.nextLine();
+        if(fullFilePath.isEmpty()) {
+            fullFilePath = System.getProperty("user.home") + "/Downloads/" + file;
+        } else {
+            if(fullFilePath.endsWith("/")) {
+                fullFilePath = fullFilePath + file;
+            } else {
+                fullFilePath = fullFilePath + "/" + file;
+            }
+        }
+        return fullFilePath;
     }
 
     private String getCellType(int row, int column) {
