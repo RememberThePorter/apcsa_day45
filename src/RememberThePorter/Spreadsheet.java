@@ -247,14 +247,14 @@ public class Spreadsheet implements Grid {
             if(command[2].endsWith("%")) {
                 CELLS[coordinates[0]][coordinates[1]] = new PercentCell(command[2]);
                 return getGridText();
-            } else if(command[2].startsWith("\"") && command[2].endsWith("\"")) {
-                CELLS[coordinates[0]][coordinates[1]] = new TextCell(command[2]);
-                return getGridText();
             } else if(command[2].startsWith("(") && command[2].endsWith(")")) {
                 CELLS[coordinates[0]][coordinates[1]] = new FormulaCell(command[2]);
                 return getGridText();
-            } else {
+            } else if(command[2].matches("[0-9]+(\\.[0-9]+)?")) {
                 CELLS[coordinates[0]][coordinates[1]] = new ValueCell(command[2]);
+                return getGridText();
+            } else {
+                CELLS[coordinates[0]][coordinates[1]] = new TextCell(command[2]);
                 return getGridText();
             }
         } else {
