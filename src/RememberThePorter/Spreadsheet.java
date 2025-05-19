@@ -61,7 +61,7 @@ public class Spreadsheet implements Grid {
             try {
                 return open(commandWords[1]);
             } catch (Exception e) {
-                return "Invalid file name.";
+                return "An error occurred while opening the file.";
             }
         } else if(commandWords[0].equalsIgnoreCase("help")) {
             if(commandWords.length == 1) {
@@ -120,7 +120,22 @@ public class Spreadsheet implements Grid {
         for(int row = 0; row < getRows(); row++) {
             String lineToSave = "";
             for(int column = 0; column < getColumns(); column++) {
-                lineToSave = lineToSave + CELLS[row][column].fullCellText() + ", ";
+                String cellToSave = CELLS[row][column].fullCellText();
+                if(cellToSave.startsWith("\"")) {
+                    cellToSave = "\"\"" + cellToSave;
+                }
+                if(cellToSave.endsWith("\"")) {
+                    cellToSave = cellToSave + "\"\"";
+                }
+                if(cellToSave.contains(",")) {
+                    if(!cellToSave.startsWith("\"")) {
+                        cellToSave = "\"" + cellToSave;
+                    }
+                    if(!cellToSave.endsWith("\"")) {
+                        cellToSave = cellToSave + "\"";
+                    }
+                }
+                lineToSave = lineToSave + cellToSave + ", ";
             }
             lineToSave = lineToSave.substring(0, lineToSave.length() - 1) + "\n";
             textToSave = textToSave + lineToSave;
