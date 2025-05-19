@@ -31,7 +31,7 @@ public class Help {
 
     private static String helpWithHelpCommand() {
         return "Entering \"help\" shows a list of all commands that can be used.\n" +
-                "Adding a parameter shows the help dialogue for the command enetered as the parameter (for example, \"help help\" shows this dialogue).";
+                "Adding a parameter shows the help dialogue for the command entered as the parameter (for example, \"help help\" shows this dialogue).";
     }
 
     private static String helpWithSaveCommand() {
