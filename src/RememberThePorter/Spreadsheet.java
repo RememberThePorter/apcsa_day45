@@ -116,25 +116,11 @@ public class Spreadsheet implements Grid {
         }
         PrintWriter writer = new PrintWriter(fullFilePath, StandardCharsets.UTF_8);
 
-        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        for(int row = 0; row < getRows(); row++) {
-            for (int column = 0; column < getColumns(); column++) {
-                char columnLetter = alphabet.charAt(column);
-                int rowAdjustedForZeroIndex = row + 1;
-
-                String type = getCellType(row, column);
-                if(!type.equals("EmptyCell")) {
-                    String stringToPrint = columnLetter + rowAdjustedForZeroIndex + "," + type + "," + CELLS[row][column].fullCellText();
-                    writer.println(stringToPrint);
-                }
-            }
-        }
-
         String textToSave = "";
         for(int row = 0; row < getRows(); row++) {
             String lineToSave = "";
             for(int column = 0; column < getColumns(); column++) {
-                lineToSave = lineToSave + CELLS[row][column].fullCellText() + ",";
+                lineToSave = lineToSave + CELLS[row][column].fullCellText() + ", ";
             }
             lineToSave = lineToSave.substring(0, lineToSave.length() - 1) + "\n";
             textToSave = textToSave + lineToSave;
@@ -202,30 +188,37 @@ public class Spreadsheet implements Grid {
     }
 
     public String open(String file) throws IOException {
-        clearAll();
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        String fileNameWithExtension = Path.of(file).getFileName().toString();
+        String fileNameWithoutExtension = fileNameWithExtension.substring(0, fileNameWithExtension.length() - 4);
+
         String fileContents = Files.readString(Path.of(file), StandardCharsets.UTF_8);
         String[] contentLines = fileContents.split("\n");
-        for(String line : contentLines) {
-            String[] contentInformation = line.split(",");
-            if(contentInformation[1].equals("PercentCell")) {
-                String[] wholeAndDecimal = contentInformation[2].split("\\.", 2);
-                String percentFromDecimal;
-                if(wholeAndDecimal[1].length() > 2) {
-                    int whole = (Integer.parseInt(wholeAndDecimal[0]) * 100) + Integer.parseInt(wholeAndDecimal[1].substring(0, 2));
-                    String decimal = wholeAndDecimal[1].substring(2);
-                    percentFromDecimal = whole + "." + decimal + "%";
-                } else {
-                    percentFromDecimal = (Integer.parseInt(wholeAndDecimal[0]) * 100) + wholeAndDecimal[1] + "%";
+        String[] lineOne = contentLines[0].split(",");
+        Spreadsheet sheet = Texcel.newSheet(fileNameWithoutExtension, contentLines.length, lineOne.length);
+
+        String[][] cellContents = new String[contentLines.length][lineOne.length];
+        for(int line = 0; line < contentLines.length; line++) {
+            String[] thisLine = contentLines[line].split(",");
+            for(int cell = 0; cell < thisLine.length; cell++) {
+                cellContents[line][cell] = thisLine[cell];
+                while(cellContents[line][cell].startsWith(" ") && cellContents[line][cell].length() > 1) {
+                    cellContents[line][cell] = cellContents[line][cell].substring(1);
                 }
-                if(percentFromDecimal.startsWith("0")) {
-                    percentFromDecimal = percentFromDecimal.substring(1);
-                }
-                processCommand(contentInformation[0] + " = " + percentFromDecimal);
-            } else {
-                processCommand(contentInformation[0] + " = " + contentInformation[2]);
             }
         }
-        return getGridText();
+
+        for(int column = 0; column < cellContents[0].length; column++) {
+            for(int row = 0; row < cellContents.length; row++) {
+                String cell = alphabet.substring(column, column + 1) + (row + 1);
+                if(!cellContents[row][column].equals(" ") && !cellContents[row][column].isEmpty()) {
+                    sheet.processCommand(cell + " = " + cellContents[row][column]);
+                }
+            }
+        }
+
+        return sheet.getGridText();
     }
 
     public void clearAll() {
@@ -295,7 +288,7 @@ public class Spreadsheet implements Grid {
     public String getGridText() {
         String alphabet = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         StringBuilder grid = new StringBuilder("Current Spreadsheet: " + SPREADSHEET_TITLE + "\n   |");
-        for(int column = 1; column <= getColumns(); column ++) {
+        for(int column = 1; column <= getColumns(); column++) {
             grid.append(alphabet.charAt(column) + "         |");
         }
         grid.append("\n");
