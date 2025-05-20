@@ -11,6 +11,7 @@ public class Help {
                 save [file]        - Saves the current spreadsheet to a file
                 open [file]        - Opens a file
                 show               - Shows the current state of the spreadsheet
+                rename [new name]  - Renames the current spreadsheet to the specified name
                 clear              - Clears the entire spreadsheet
                 clear [cell]       - Clears the specified cell
                 [cell]             - Shows the contents of the specified cell
@@ -27,6 +28,7 @@ public class Help {
             case "save" -> helpWithSaveCommand();
             case "open" -> helpWithOpenCommand();
             case "show" -> helpWithShowCommand();
+            case "rename" -> helpWithRenameCommand();
             case "clear" -> helpWithClearCommand();
             case "cell" -> helpWithCellCommand();
             default -> "That command does not exist.";
@@ -62,6 +64,10 @@ public class Help {
 
     private static String helpWithShowCommand() {
         return "Entering \"show\" prints the current state of the spreadsheet.";
+    }
+
+    private static String helpWithRenameCommand() {
+        return "Entering \"rename\" followed by a string of text renames the current spreadsheet to the indicated name.";
     }
 
     private static String helpWithClearCommand() {

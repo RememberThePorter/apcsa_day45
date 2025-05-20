@@ -37,6 +37,8 @@ public class Texcel {
                 }
             }
             return "No such spreadsheet \"" + commandSplitByWord[1] + "\" found.";
+        } else if(commandSplitByWord[0].equalsIgnoreCase("rename")) {
+            return currentSheet.updateSpreadsheetTitle(commandSplitByWord[1]);
         } else {
             return currentSheet.processCommand(commandInputted);
         }
