@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class Spreadsheet implements Grid {
     private final Cell[][] CELLS;
-    private final String SPREADSHEET_TITLE;
+    private String SPREADSHEET_TITLE;
     private final int ROWS;
     private final int COLUMNS;
 
@@ -27,6 +27,11 @@ public class Spreadsheet implements Grid {
 
     public String getSpreadsheetTitle() {
         return SPREADSHEET_TITLE;
+    }
+
+    protected String updateSpreadsheetTitle(String newName) {
+        SPREADSHEET_TITLE = newName;
+        return "Spreadsheet renamed to: " + SPREADSHEET_TITLE;
     }
 
     @Override
