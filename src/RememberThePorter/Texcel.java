@@ -56,9 +56,15 @@ public class Texcel {
         int rows = scanValidNumber();
 
         System.out.print("Enter number of columns to use for spreadsheet: ");
-        int cols = scanValidNumber();
+        int columns = scanValidNumber();
 
-        sheets.add(new Spreadsheet(spreadsheetTitle, rows, cols));
+        sheets.add(new Spreadsheet(spreadsheetTitle, rows, columns));
+        currentSheet = sheets.getLast();
+        return sheets.getLast();
+    }
+
+    public static Spreadsheet newSheet(String spreadsheetTitle, int rows, int columns) {
+        sheets.add(new Spreadsheet(spreadsheetTitle, rows, columns));
         currentSheet = sheets.getLast();
         return sheets.getLast();
     }
@@ -71,6 +77,10 @@ public class Texcel {
             number = scanner.nextInt();
         } catch(InputMismatchException e) {
             System.out.print("You must enter a valid number! Enter a valid number: ");
+            number = scanValidNumber();
+        }
+        if(number <= 0) {
+            System.out.print("Number cannot be less than one! Enter a number of one or higher :");
             number = scanValidNumber();
         }
         return number;

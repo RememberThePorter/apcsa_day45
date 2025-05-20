@@ -12,8 +12,8 @@ public class TextCell implements Cell {
     @Override
     public String abbreviatedCellText() {
         StringBuilder abbreviatedCellText = new StringBuilder(text);
-        if(text.startsWith("\"") && text.endsWith("\"")) {
-            abbreviatedCellText = new StringBuilder(text.substring(1, text.length() - 1));
+        if(text.startsWith("\"\"\"") && text.endsWith("\"\"\"")) {
+            abbreviatedCellText = new StringBuilder(text.substring(2, text.length() - 2));
         }
         if(abbreviatedCellText.length() > 10) {
             abbreviatedCellText = new StringBuilder(abbreviatedCellText.substring(0, 10));

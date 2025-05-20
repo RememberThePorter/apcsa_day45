@@ -35,12 +35,13 @@ public class Help {
 
     private static String helpWithHelpCommand() {
         return "Entering \"help\" shows a list of all commands that can be used.\n" +
-                "Adding a parameter shows the help dialogue for the command enetered as the parameter (for example, \"help help\" shows this dialogue).";
+                "Adding a parameter shows the help dialogue for the command entered as the parameter (for example, \"help help\" shows this dialogue).";
     }
 
     private static String helpWithSaveCommand() {
         return "Entering \"save\" followed by a file name saves the current state of the spreadsheet to the indicated file.\n" +
-                "Texcel's CSV format is not compatible with Google Sheets or Microsoft Excel.";
+                "If any cell contains quotation marks anywhere other than the beginning or end, the save command will not work." +
+                "Texcel's CSV format is mostly compatible with Google Sheets and Microsoft Excel.";
     }
 
     private static String helpWithNewCommand() {
@@ -55,7 +56,8 @@ public class Help {
 
     private static String helpWithOpenCommand() {
         return "Entering \"open\" followed by a file name opens the spreadsheet contained in the indicated file.\n" +
-                "Google Sheets' and Microsoft Excel's CSV formats are not compatible with Texcel.";
+                "If any cell contains quotation marks or commas, the open command will not work." +
+                "Google Sheets' and Microsoft Excel's CSV formats are mostly compatible with Texcel.";
     }
 
     private static String helpWithShowCommand() {
@@ -69,6 +71,6 @@ public class Help {
 
     private static String helpWithCellCommand() {
         return "Entering a cell name prints the contents of the indicated cell.\n" +
-                "Entering a cell name followed by \" = \" and some content changes the contents of the indicated cell to the indicated content. Remember that text input must be in quotes.";
+                "Entering a cell name followed by \" = \" and some content changes the contents of the indicated cell to the indicated content.";
     }
 }
