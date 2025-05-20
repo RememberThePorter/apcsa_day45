@@ -22,9 +22,9 @@ public class Help {
     public static String help(String command) {
         return switch(command) {
             case "help" -> helpWithHelpCommand();
-            case "save" -> helpWithSaveCommand();
             case "new" -> helpWithNewCommand();
             case "load" -> helpWithLoadCommand();
+            case "save" -> helpWithSaveCommand();
             case "open" -> helpWithOpenCommand();
             case "show" -> helpWithShowCommand();
             case "clear" -> helpWithClearCommand();
@@ -38,12 +38,6 @@ public class Help {
                 "Adding a parameter shows the help dialogue for the command entered as the parameter (for example, \"help help\" shows this dialogue).";
     }
 
-    private static String helpWithSaveCommand() {
-        return "Entering \"save\" followed by a file name saves the current state of the spreadsheet to the indicated file.\n" +
-                "If any cell contains quotation marks anywhere other than the beginning or end, the save command will not work." +
-                "Texcel's CSV format is mostly compatible with Google Sheets and Microsoft Excel.";
-    }
-
     private static String helpWithNewCommand() {
         return "Entering \"new\" opens a dialogue that allows for the creation of a new spreadsheet. You will be prompted to enter a title, as well as the number of rows and columns it should have.\n" +
                 "There is a maximum of 999 rows and 26 columns.";
@@ -52,6 +46,12 @@ public class Help {
     private static String helpWithLoadCommand() {
         return "Entering \"load\" followed by a spreadsheet title loads the indicated spreadsheet.\n" +
                 "The spreadsheet loaded must have been previously created using the \"new\" command.";
+    }
+
+    private static String helpWithSaveCommand() {
+        return "Entering \"save\" followed by a file name saves the current state of the spreadsheet to the indicated file.\n" +
+                "If any cell contains quotation marks anywhere other than the beginning or end, the save command will not work." +
+                "Texcel's CSV format is mostly compatible with Google Sheets and Microsoft Excel.";
     }
 
     private static String helpWithOpenCommand() {
