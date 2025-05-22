@@ -4,35 +4,47 @@ public class Help {
     public static String help() {
         return """
                 Here's a list of commands you can use:
-                help               - Shows this dialogue
-                help [command]     - Shows help for a specific command
-                new                - Opens dialogue to create a new spreadsheet
-                load [spreadsheet] - Loads a previously-created spreadsheet
-                save [file]        - Saves the current spreadsheet to a file
-                open [file]        - Opens a file
-                show               - Shows the current state of the spreadsheet
-                rename [new name]  - Renames the current spreadsheet to the specified name
-                clear              - Clears the entire spreadsheet
-                clear [cell]       - Clears the specified cell
                 [cell]             - Shows the contents of the specified cell
                 [cell] = [value]   - Sets the contents of the specified cell to the specified value
+                clear              - Clears the entire spreadsheet
+                clear [cell]       - Clears the specified cell
+                help               - Shows this dialogue
+                help [command]     - Shows help for a specific command
+                list               - Lists the names of all active spreadsheets
+                load [spreadsheet] - Loads a previously-created spreadsheet
+                new                - Opens dialogue to create a new spreadsheet
+                open [file]        - Opens a file
+                rename [new name]  - Renames the current spreadsheet to the specified name
+                save [file]        - Saves the current spreadsheet to a file
+                show               - Shows the current state of the spreadsheet
                 
-                To view more help for the final two commands, use "help cell\"""";
+                To view more help for the first two commands, use "help cell\"""";
     }
 
     public static String help(String command) {
         return switch(command) {
-            case "help" -> helpWithHelpCommand();
-            case "new" -> helpWithNewCommand();
-            case "load" -> helpWithLoadCommand();
-            case "save" -> helpWithSaveCommand();
-            case "open" -> helpWithOpenCommand();
-            case "show" -> helpWithShowCommand();
-            case "rename" -> helpWithRenameCommand();
-            case "clear" -> helpWithClearCommand();
             case "cell" -> helpWithCellCommand();
+            case "clear" -> helpWithClearCommand();
+            case "help" -> helpWithHelpCommand();
+            case "list" -> helpWithListCommand();
+            case "load" -> helpWithLoadCommand();
+            case "new" -> helpWithNewCommand();
+            case "open" -> helpWithOpenCommand();
+            case "rename" -> helpWithRenameCommand();
+            case "save" -> helpWithSaveCommand();
+            case "show" -> helpWithShowCommand();
             default -> "That command does not exist.";
         };
+    }
+
+    private static String helpWithCellCommand() {
+        return "Entering a cell name prints the contents of the indicated cell.\n" +
+                "Entering a cell name followed by \" = \" and some content changes the contents of the indicated cell to the indicated content.";
+    }
+
+    private static String helpWithClearCommand() {
+        return "Entering \"clear\" deletes all content from the spreadsheet.\n" +
+                "Adding a cell name as a parameter deletes the content from the indicated cell only.";
     }
 
     private static String helpWithHelpCommand() {
@@ -40,9 +52,8 @@ public class Help {
                 "Adding a parameter shows the help dialogue for the command entered as the parameter (for example, \"help help\" shows this dialogue).";
     }
 
-    private static String helpWithNewCommand() {
-        return "Entering \"new\" opens a dialogue that allows for the creation of a new spreadsheet. You will be prompted to enter a title, as well as the number of rows and columns it should have.\n" +
-                "There is a maximum of 999 rows and 26 columns.";
+    private static String helpWithListCommand() {
+        return "Entering \"list\" lists the names of all spreadsheets created or opened in the current session.";
     }
 
     private static String helpWithLoadCommand() {
@@ -50,10 +61,9 @@ public class Help {
                 "The spreadsheet loaded must have been previously created using the \"new\" command.";
     }
 
-    private static String helpWithSaveCommand() {
-        return "Entering \"save\" followed by a file name saves the current state of the spreadsheet to the indicated file.\n" +
-                "If any cell contains quotation marks anywhere other than the beginning or end, the save command will not work." +
-                "Texcel's CSV format is mostly compatible with Google Sheets and Microsoft Excel.";
+    private static String helpWithNewCommand() {
+        return "Entering \"new\" opens a dialogue that allows for the creation of a new spreadsheet. You will be prompted to enter a title, as well as the number of rows and columns it should have.\n" +
+                "There is a maximum of 999 rows and 26 columns.";
     }
 
     private static String helpWithOpenCommand() {
@@ -62,21 +72,17 @@ public class Help {
                 "Google Sheets' and Microsoft Excel's CSV formats are mostly compatible with Texcel.";
     }
 
-    private static String helpWithShowCommand() {
-        return "Entering \"show\" prints the current state of the spreadsheet.";
-    }
-
     private static String helpWithRenameCommand() {
         return "Entering \"rename\" followed by a string of text renames the current spreadsheet to the indicated name.";
     }
 
-    private static String helpWithClearCommand() {
-        return "Entering \"clear\" deletes all content from the spreadsheet.\n" +
-                "Adding a cell name as a parameter deletes the content from the indicated cell only.";
+    private static String helpWithSaveCommand() {
+        return "Entering \"save\" followed by a file name saves the current state of the spreadsheet to the indicated file.\n" +
+                "If any cell contains quotation marks anywhere other than the beginning or end, the save command will not work." +
+                "Texcel's CSV format is mostly compatible with Google Sheets and Microsoft Excel.";
     }
 
-    private static String helpWithCellCommand() {
-        return "Entering a cell name prints the contents of the indicated cell.\n" +
-                "Entering a cell name followed by \" = \" and some content changes the contents of the indicated cell to the indicated content.";
+    private static String helpWithShowCommand() {
+        return "Entering \"show\" prints the current state of the spreadsheet.";
     }
 }
