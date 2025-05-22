@@ -136,8 +136,11 @@ public class Spreadsheet implements Grid {
 
     public boolean save(String file) throws IOException {
         boolean savedSuccessfully;
-
         String fullFilePath;
+
+        if(!file.endsWith(".csv")) {
+            file = file + ".csv";
+        }
 
         String os = System.getProperty("os.name").toLowerCase();
         if(os.contains("windows")) {
