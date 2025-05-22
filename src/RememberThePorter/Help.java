@@ -26,6 +26,7 @@ public class Help {
             case "help" -> helpWithHelpCommand();
             case "new" -> helpWithNewCommand();
             case "load" -> helpWithLoadCommand();
+            case "list" -> helpWithListCommand();
             case "save" -> helpWithSaveCommand();
             case "open" -> helpWithOpenCommand();
             case "show" -> helpWithShowCommand();
@@ -49,6 +50,10 @@ public class Help {
     private static String helpWithLoadCommand() {
         return "Entering \"load\" followed by a spreadsheet title loads the indicated spreadsheet.\n" +
                 "The spreadsheet loaded must have been previously created using the \"new\" command.";
+    }
+
+    private static String helpWithListCommand() {
+        return "Entering \"list\" lists the names of all spreadsheets created or opened in the current session.";
     }
 
     private static String helpWithSaveCommand() {
