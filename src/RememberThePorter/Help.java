@@ -8,7 +8,7 @@ public class Help {
                 help [command]     - Shows help for a specific command
                 new                - Opens dialogue to create a new spreadsheet
                 load [spreadsheet] - Loads a previously-created spreadsheet
-                list               - Lists the names of all created spreadsheets
+                list               - Lists the names of all active spreadsheets
                 save [file]        - Saves the current spreadsheet to a file
                 open [file]        - Opens a file
                 show               - Shows the current state of the spreadsheet
