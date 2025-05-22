@@ -29,6 +29,8 @@ public class Texcel {
         String[] commandSplitByWord = commandInputted.split(" ", 2);
         if(commandInputted.equalsIgnoreCase("new")) {
             return newSheet().getGridText();
+        } else if(commandInputted.equalsIgnoreCase("list")) {
+            return list();
         } else if(commandSplitByWord[0].equalsIgnoreCase("load")) {
             for (Spreadsheet sheet : sheets) {
                 if (sheet.getSpreadsheetTitle().equals(commandSplitByWord[1])) {
@@ -42,6 +44,14 @@ public class Texcel {
         } else {
             return currentSheet.processCommand(commandInputted);
         }
+    }
+
+    private static String list() {
+        StringBuilder listOfSpreadsheets = new StringBuilder();
+        for(Spreadsheet spreadsheet : sheets) {
+            listOfSpreadsheets.append(spreadsheet.getSpreadsheetTitle()).append("\n");
+        }
+        return listOfSpreadsheets.toString();
     }
 
     private static Spreadsheet newSheet() {
