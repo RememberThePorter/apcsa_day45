@@ -120,6 +120,10 @@ public class Spreadsheet implements Grid {
     public boolean save() throws IOException {
         boolean savedSuccessfully;
         if(!lastSavedName.isEmpty() && !lastSavedPath.isEmpty()) {
+            if(!lastSavedPath.endsWith(".csv")) {
+                lastSavedPath = lastSavedPath + ".csv";
+            }
+
             File fileToSave = new File(lastSavedPath);
             if(!fileToSave.exists()) {
                 fileToSave.createNewFile();
