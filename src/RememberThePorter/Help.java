@@ -15,6 +15,7 @@ public class Help {
                 new                - Opens dialogue to create a new spreadsheet
                 open [file]        - Opens a file
                 rename [new name]  - Renames the current spreadsheet to the specified name
+                save               - Saves the current spreadsheet to the last used file location
                 save [file]        - Saves the current spreadsheet to a file
                 show               - Shows the current state of the spreadsheet
                 
@@ -77,9 +78,15 @@ public class Help {
     }
 
     private static String helpWithSaveCommand() {
-        return "Entering \"save\" followed by a file name saves the current state of the spreadsheet to the indicated file.\n" +
-                "If any cell contains quotation marks anywhere other than the beginning or end, the save command will not work." +
-                "Texcel's CSV format is mostly compatible with Google Sheets and Microsoft Excel.";
+        return """
+                Entering "save" saves the current state of the active spreadsheet to the location that was last used to save that spreadsheet.
+                This only works if the active spreadsheet has previously been saved to a file during this session.
+                
+                Entering "save" followed by a file name saves the current state of the active spreadsheet to the indicated file.
+                
+                If any cell contains quotation marks anywhere other than the beginning or end, the save command will not work.
+                Spreadsheets will always save in the .csv format.
+                Texcel's CSV format is mostly compatible with Google Sheets and Microsoft Excel.""";
     }
 
     private static String helpWithShowCommand() {
