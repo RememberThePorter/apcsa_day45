@@ -15,6 +15,8 @@ public class Spreadsheet implements Grid {
     private String SPREADSHEET_TITLE;
     private final int ROWS;
     private final int COLUMNS;
+    private String lastSavedName = "";
+    private String lastSavedPath = "";
 
     public Spreadsheet(String title, int rows, int cols) {
         this.CELLS = new Cell[rows][cols];
@@ -38,23 +40,37 @@ public class Spreadsheet implements Grid {
     public String processCommand(String command) {
         String[] commandWords = command.split(" ", 3);
         if(commandWords[0].equalsIgnoreCase("clear")) {
-            if(commandWords.length == 1) {
+            if (commandWords.length == 1) {
                 clearAll();
             } else {
                 try {
                     clearCell(commandWords[1]);
-                } catch(Exception e) {
+                } catch (Exception e) {
                     return "Invalid cell.";
                 }
             }
             return getGridText();
+        } else if(command.equalsIgnoreCase("save")) {
+            boolean savedSuccessfully;
+
+            try {
+                savedSuccessfully = save();
+            } catch(Exception e) {
+                return e.toString();
+            }
+
+            if(savedSuccessfully) {
+                return "Saved successfully as " + lastSavedName + " at " + lastSavedPath + "!";
+            } else {
+                return "Save unsuccessful.";
+            }
         } else if(commandWords[0].equalsIgnoreCase("save")) {
             boolean savedSuccessfully;
 
             try {
                 savedSuccessfully = save(commandWords[1]);
             } catch (Exception e) {
-                return "Invalid file name.";
+                return e.toString();
             }
 
             if(savedSuccessfully) {
@@ -101,10 +117,34 @@ public class Spreadsheet implements Grid {
         }
     }
 
+    public boolean save() throws IOException {
+        boolean savedSuccessfully;
+        if(!lastSavedName.isEmpty() && !lastSavedPath.isEmpty()) {
+            if(!lastSavedPath.endsWith(".csv")) {
+                lastSavedPath = lastSavedPath + ".csv";
+            }
+
+            File fileToSave = new File(lastSavedPath);
+            if(!fileToSave.exists()) {
+                fileToSave.createNewFile();
+            }
+
+            String textToSave = getTextToSave();
+
+            savedSuccessfully = writeToFile(lastSavedPath, textToSave);
+        } else {
+            throw new IOException("This file has not yet been saved, and therefore a file name must be specified. Use \"help save\" for more information.");
+        }
+        return savedSuccessfully;
+    }
+
     public boolean save(String file) throws IOException {
         boolean savedSuccessfully;
-
         String fullFilePath;
+
+        if(!file.endsWith(".csv")) {
+            file = file + ".csv";
+        }
 
         String os = System.getProperty("os.name").toLowerCase();
         if(os.contains("windows")) {
@@ -119,41 +159,16 @@ public class Spreadsheet implements Grid {
         if(!fileToSave.exists()) {
             fileToSave.createNewFile();
         }
-        PrintWriter writer = new PrintWriter(fullFilePath, StandardCharsets.UTF_8);
 
-        String textToSave = "";
-        for(int row = 0; row < getRows(); row++) {
-            String lineToSave = "";
-            for(int column = 0; column < getColumns(); column++) {
-                String cellToSave = CELLS[row][column].fullCellText();
-                if(cellToSave.startsWith("\"")) {
-                    cellToSave = "\"\"" + cellToSave;
-                }
-                if(cellToSave.endsWith("\"")) {
-                    cellToSave = cellToSave + "\"\"";
-                }
-                if(cellToSave.contains(",")) {
-                    if(!cellToSave.startsWith("\"")) {
-                        cellToSave = "\"" + cellToSave;
-                    }
-                    if(!cellToSave.endsWith("\"")) {
-                        cellToSave = cellToSave + "\"";
-                    }
-                }
-                lineToSave = lineToSave + cellToSave + ", ";
-            }
-            lineToSave = lineToSave.substring(0, lineToSave.length() - 1) + "\n";
-            textToSave = textToSave + lineToSave;
+        String textToSave = getTextToSave();
+
+        savedSuccessfully = writeToFile(fullFilePath, textToSave);
+
+        if(savedSuccessfully) {
+            this.lastSavedName = file;
+            this.lastSavedPath = fullFilePath;
         }
 
-        try {
-            writer.write(textToSave);
-            savedSuccessfully = true;
-        } catch(Exception e) {
-            savedSuccessfully = false;
-        }
-
-        writer.close();
         return savedSuccessfully;
     }
 
@@ -192,6 +207,46 @@ public class Spreadsheet implements Grid {
             }
         }
         return fullFilePath;
+    }
+
+    private String getTextToSave() {
+        StringBuilder textToSave = new StringBuilder();
+        for(int row = 0; row < getRows(); row++) {
+            StringBuilder lineToSave = new StringBuilder();
+            for(int column = 0; column < getColumns(); column++) {
+                String cellToSave = CELLS[row][column].fullCellText();
+                if(cellToSave.startsWith("\"")) {
+                    cellToSave = "\"\"" + cellToSave;
+                }
+                if(cellToSave.endsWith("\"")) {
+                    cellToSave = cellToSave + "\"\"";
+                }
+                if(cellToSave.contains(",")) {
+                    if(!cellToSave.startsWith("\"")) {
+                        cellToSave = "\"" + cellToSave;
+                    }
+                    if(!cellToSave.endsWith("\"")) {
+                        cellToSave = cellToSave + "\"";
+                    }
+                }
+                lineToSave.append(cellToSave).append(", ");
+            }
+            lineToSave = new StringBuilder(lineToSave.substring(0, lineToSave.length() - 1) + "\n");
+            textToSave.append(lineToSave);
+        }
+        return textToSave.toString();
+    }
+
+    private boolean writeToFile(String fileToWriteTo, String textToWrite) throws IOException {
+        PrintWriter writer = new PrintWriter(fileToWriteTo, StandardCharsets.UTF_8);
+        try {
+            writer.write(textToWrite);
+            writer.close();
+            return true;
+        } catch(Exception e) {
+            writer.close();
+            return false;
+        }
     }
 
     private String getCellType(int row, int column) {
@@ -237,6 +292,9 @@ public class Spreadsheet implements Grid {
                 }
             }
         }
+
+        lastSavedName = fileNameWithExtension;
+        lastSavedPath = file;
 
         return sheet.getGridText();
     }
