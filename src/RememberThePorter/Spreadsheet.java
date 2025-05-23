@@ -293,6 +293,9 @@ public class Spreadsheet implements Grid {
             }
         }
 
+        lastSavedName = fileNameWithExtension;
+        lastSavedPath = file;
+
         return sheet.getGridText();
     }
 
